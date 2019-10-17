@@ -7,7 +7,7 @@ import {
   StyleSheet,
   ImageBackground,
   ActivityIndicator,
-  Modal, Alert
+  Modal, Alert, AsyncStorage
 } from "react-native";
 import * as React from "react";
 import {FormInput} from "../FormInput/indx";
@@ -21,7 +21,6 @@ import * as JSEncrypt from "jsencrypt";
 import {Loader} from "../Loader";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
-import AsyncStorage from '@react-native-community/async-storage';
 
 interface LoginProps {
   username: string;
