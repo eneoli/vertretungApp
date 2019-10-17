@@ -1,1 +1,5 @@
-export class Alert
+// TODO web alert
+
+export class Alert {
+
+}
