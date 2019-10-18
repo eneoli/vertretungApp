@@ -1,13 +1,10 @@
 import {Component, SyntheticEvent} from "react";
 import {
   Image,
-  TextInput,
-  Text,
   View,
   StyleSheet,
   ImageBackground,
-  ActivityIndicator,
-  Modal, Alert, AsyncStorage
+  AsyncStorage
 } from "react-native";
 import * as React from "react";
 import {FormInput} from "../FormInput/indx";
@@ -21,6 +18,7 @@ import * as JSEncrypt from "jsencrypt";
 import {Loader} from "../Loader";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
+import {Alert} from "../Alert";
 
 interface LoginProps {
   username: string;
@@ -40,6 +38,10 @@ export class Login extends Component<LoginProps> {
   private password: string;
   @observable
   private showLoading: boolean = false;
+  @observable
+  private showError: boolean = false;
+  @observable
+  private errorMessage: string = '';
 
   private handleUsernameUpdate(e: string) {
     this.username = e;
@@ -47,10 +49,9 @@ export class Login extends Component<LoginProps> {
 
   private handlePasswordUpdate(e: string) {
     this.password = e;
-    console.log(e);
   }
 
-  private async encryptLogin(username: string, password: string) {
+  private async encryptLogin(username: string, password: string): Promise<string> {
     let crypto = new JSEncrypt.JSEncrypt();
     let publicKey = await MoodleProvider.getPublicKey();
     crypto.setPublicKey(publicKey);
@@ -60,11 +61,33 @@ export class Login extends Component<LoginProps> {
     }));
   }
 
+  private login() {
+    this.showLoading = true;
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({routeName: 'Plan'})],
+    });
+    this.encryptLogin(this.username, this.password).then((e) => {
+      MoodleProvider.login(e).then((m) => {
+        AsyncStorage.setItem('moodleSession', m);
+        this.props.navigation.dispatch(resetAction);
+      }).catch((e) => {
+        this.errorMessage = e.message;
+        this.showLoading = false;
+        this.showError = true;
+      })
+    });
+  }
+
   public render() {
     return (
-        <View style={{width: '100%', height: '100%'}}>
+        <View style={styles.login}>
           <Loader visible={this.showLoading}/>
-          <ImageBackground style={{flex: 1}} source={require('./../../../assets/background.png')}>
+          <Alert visible={this.showError} title={'Es ist ein Fehler aufgetreten'} message={this.errorMessage}
+                 onOkPress={() => {
+                   this.showError = false
+                 }}/>
+          <ImageBackground style={styles.background} source={require('./../../../assets/background.png')}>
             <View style={styles.container}>
               <Image source={require('./../../../assets/icon.png')} style={styles.logo}/>
               <View style={styles.form}>
@@ -72,35 +95,7 @@ export class Login extends Component<LoginProps> {
                            onChangeText={this.handleUsernameUpdate.bind(this)}/>
                 <FormInput placeholder={'Passwort'} placeholderTextColor={'lightgrey'} secureTextEntry={true}
                            value={this.props.password} onChangeText={this.handlePasswordUpdate.bind(this)}/>
-                <Button label={'Log In'} onPress={() => {
-                  this.showLoading = true;
-                  const resetAction = StackActions.reset({
-                    index: 0,
-                    actions: [NavigationActions.navigate({routeName: 'Plan'})],
-                  });
-                  this.encryptLogin(this.username, this.password).then((e) => {
-                    MoodleProvider.login(e).then((m) => {
-                      AsyncStorage.setItem('moodleSession', m);
-                      this.props.navigation.dispatch(resetAction);
-                    }).catch((e) => {
-                      Alert.alert(
-                          'Alert Title',
-                          'My Alert Msg',
-                          [
-                            {text: 'Ask me later', onPress: () => console.log('Ask me later pressed')},
-                            {
-                              text: 'Cancel',
-                              onPress: () => console.log('Cancel Pressed'),
-                              style: 'cancel',
-                            },
-                            {text: 'OK', onPress: () => console.log('OK Pressed')},
-                          ],
-                          {cancelable: false},
-                      );
-                      this.showLoading = false;
-                    })
-                  });
-                }}/>
+                <Button label={'Log In'} onPress={this.login.bind(this)}/>
               </View>
             </View>
           </ImageBackground>
@@ -110,10 +105,17 @@ export class Login extends Component<LoginProps> {
 }
 
 const styles = StyleSheet.create({
+  login: {
+    width: '100%',
+    height: '100%',
+  },
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  background: {
+    flex: 1
   },
   logo: {
     flex: 1,
