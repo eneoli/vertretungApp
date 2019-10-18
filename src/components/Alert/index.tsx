@@ -1,5 +1,3 @@
-// TODO web alert
-
 import {Component} from "react";
 import {Alert as ReactAlert, StyleSheet, View, Text} from 'react-native';
 import * as React from "react";
