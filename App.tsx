@@ -3,7 +3,7 @@ import {Login} from "./src/components/Login";
 import {createAppContainer, NavigationActions} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import {Plan} from "./src/components/Plan";
-import {Text, Image, View} from 'react-native';
+import {Image, View} from 'react-native';
 import {Icon} from "react-native-elements";
 
 const icon = require('./assets/icon.png');
