@@ -46,10 +46,10 @@ export class Item extends Component<ItemProps> {
                 <Text
                     style={styles.textModal}>{this.props.entry.item.hour} Stunde, {moment(this.props.day).format('dd DD.MM')}</Text>
               </View>
-              <View style={{flexDirection: 'row', margin: 10}}>
+              {this.props.entry.item.class ? <View style={{flexDirection: 'row', margin: 10}}>
                 <FontAwesomeIcon icon={faUserFriends} size={30}/>
                 <Text style={styles.textModal}>{this.props.entry.item.class}</Text>
-              </View>
+              </View> : null}
               <View style={{flexDirection: 'row', margin: 10}}>
                 <FontAwesomeIcon icon={faBook} size={30}/>
                 <Text style={styles.textModal}>{this.props.entry.item.subject}</Text>
