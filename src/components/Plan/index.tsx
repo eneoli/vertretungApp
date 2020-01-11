@@ -21,13 +21,17 @@ export class Plan extends Component<NavigationStackScreenProps> {
 
   constructor(props) {
     super(props);
+    this.loadPlans();
+  }
+
+  public loadPlans() {
     AsyncStorage.getItem('moodleSession').then((m) => {
       this.moodleSession = m;
       MoodleProvider.getPlan('today', this.moodleSession).then((plan) => {
         this.today = plan;
         console.log("Set!");
         this.props.navigation.setParams({title: "Hi!"});
-      })
+      });
       MoodleProvider.getPlan('tomorrow', this.moodleSession).then((plan) => {
         this.tomorrow = plan;
         console.log("Set!");
@@ -52,8 +56,8 @@ export class Plan extends Component<NavigationStackScreenProps> {
                   {key: 'second', title: 'Morgen'}]
               }}
               renderScene={SceneMap({
-                first: () => <PlanView plan={this.today}/>,
-                second: () => <PlanView plan={this.tomorrow}/>
+                first: () => <PlanView plan={this.today} onRefresh={this.loadPlans.bind(this)}/>,
+                second: () => <PlanView plan={this.tomorrow} onRefresh={this.loadPlans.bind(this)}/>
               })}
               onIndexChange={(i) => this.index = i}
           />
