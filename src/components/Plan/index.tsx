@@ -1,15 +1,16 @@
 import {Component} from "react";
 import * as React from "react";
-import {View, Text, AsyncStorage, StyleSheet} from "react-native";
+import {View, Text, AsyncStorage, StyleSheet, ActivityIndicator} from "react-native";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
 import {MoodleProvider} from "../../providers/moodle";
-import {NavigationStackScreenProps} from "react-navigation-stack";
 import {SceneMap, TabBar, TabView} from "react-native-tab-view";
 import {PlanView} from "../PlanView";
+import {NavigationScreenProp} from "react-navigation";
+import {Loader} from "../Loader";
 
 interface IPlanProps {
-  showSettings: boolean;
+  navigation: NavigationScreenProp<this>;
 }
 
 @observer
@@ -18,35 +19,43 @@ export class Plan extends Component<IPlanProps> {
   private moodleSession: string = '';
   @observable
   private today: any = {};
+  @observable
   private tomorrow: any = {};
+  @observable
+  private studentClass: any = {};
+  @observable
+  private loading: boolean = true;
 
   @observable
   private index: number = 0;
 
   constructor(props) {
     super(props);
+    this.props.navigation.addListener('didFocus', async () => {
+      this.loading = true;
+      await this.loadPlans();
+      await this.readStudentClass();
+      this.loading = false;
+    });
+    this.loading = true;
     this.loadPlans();
+    this.readStudentClass();
+    this.loading = false;
   }
 
-  public loadPlans() {
-    AsyncStorage.getItem('moodleSession').then((m) => {
-      this.moodleSession = m;
-      MoodleProvider.getPlan('today', this.moodleSession).then((plan) => {
-        this.today = plan;
-        console.log("Set!");
-      });
-      MoodleProvider.getPlan('tomorrow', this.moodleSession).then((plan) => {
-        this.tomorrow = plan;
-        console.log("Set!");
-      })
-    });
+  public async loadPlans() {
+    this.moodleSession = await AsyncStorage.getItem('moodleSession');
+    this.today = await MoodleProvider.getPlan('today', this.moodleSession);
+    this.tomorrow = await MoodleProvider.getPlan('tomorrow', this.moodleSession);
+  }
+
+  public async readStudentClass() {
+    this.studentClass = await AsyncStorage.getItem('class');
   }
 
   public render() {
-    return this.today || this.tomorrow ? (
+    return !this.loading ? (
         <View style={styles.container}>
-          {this.props.showSettings ? <Text>Hi!</Text> : null}
-
           <TabView
               swipeEnabled={true}
               renderTabBar={(props) => <TabBar     {...props}
@@ -59,19 +68,20 @@ export class Plan extends Component<IPlanProps> {
                   {key: 'second', title: 'Morgen'}]
               }}
               renderScene={SceneMap({
-                first: () => <PlanView plan={this.today} onRefresh={this.loadPlans.bind(this)}/>,
-                second: () => <PlanView plan={this.tomorrow} onRefresh={this.loadPlans.bind(this)}/>
+                first: () => <PlanView plan={this.today} onRefresh={this.loadPlans.bind(this)}
+                                       studentClass={this.studentClass}/>,
+                second: () => <PlanView plan={this.tomorrow} onRefresh={this.loadPlans.bind(this)}
+                                        studentClass={this.studentClass}/>
               })}
               onIndexChange={(i) => this.index = i}
           />
         </View>
-    ) : <Text>Bitte warten...</Text>;
+    ) : <Loader visible={true} background={false}/>;
   }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  blub: {}
+  }
 });

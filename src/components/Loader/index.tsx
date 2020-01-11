@@ -6,10 +6,16 @@ import {observable} from "mobx";
 
 interface LoaderProps {
   visible: boolean;
+  background: boolean;
 }
 
 @observer
 export class Loader extends Component<LoaderProps> {
+
+  static defaultProps = {
+    background: true,
+  };
+
   @observable
   private fade = new Animated.Value(0);
 
@@ -18,7 +24,6 @@ export class Loader extends Component<LoaderProps> {
   }
 
   private spin() {
-    console.log('DONE!');
     this.fade.setValue(0);
     Animated.timing(
         this.fade,
@@ -30,19 +35,37 @@ export class Loader extends Component<LoaderProps> {
     ).start()
   }
 
+  private getStyles(background: boolean) {
+    return StyleSheet.create({
+      modalBackground: {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        backgroundColor: background ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0)',
+        zIndex: 9999,
+      }
+    });
+  }
+
   public render() {
     this.spin();
     if (this.props.visible) {
       const f = this.fade.interpolate({
         inputRange: [0, 1],
         outputRange: [0, 1]
-      })
+      });
       return (
-            <Animated.View style={[{opacity: f}, styles.modalBackground]}>
-              <View style={styles.activityIndicatorWrapper}>
-                <ActivityIndicator size={"large"} color={'#FF3333'}/>
-              </View>
-            </Animated.View>
+          <Animated.View style={[{opacity: f}, this.getStyles(this.props.background).modalBackground]}>
+            <View style={styles.activityIndicatorWrapper}>
+              <ActivityIndicator size={"large"} color={'#FF3333'}/>
+            </View>
+          </Animated.View>
       );
     } else {
       return null;
@@ -51,19 +74,6 @@ export class Loader extends Component<LoaderProps> {
 }
 
 const styles = StyleSheet.create({
-  modalBackground: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    zIndex: 9999,
-  },
   activityIndicatorWrapper: {
     backgroundColor: 'transparent',
     height: 75,
