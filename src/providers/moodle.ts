@@ -1,6 +1,6 @@
 export class MoodleProvider {
 
-  public static middlewareUrl: string = "http://vertretung.enes.app";
+  public static middlewareUrl: string = "https://vertretung.enes.app";
   public middlewareUrl: string = MoodleProvider.middlewareUrl;
 
   /**
