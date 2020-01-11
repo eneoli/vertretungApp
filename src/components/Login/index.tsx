@@ -51,6 +51,15 @@ export class Login extends Component<LoginProps> {
     this.password = e;
   }
 
+  constructor(props: LoginProps) {
+    super(props);
+    AsyncStorage.getItem('userpass', (error, result) => {
+      if (!error && result) {
+        this.login(result);
+      }
+    });
+  }
+
   private async encryptLogin(username: string, password: string): Promise<string> {
     let crypto = new JSEncrypt.JSEncrypt();
     let publicKey = await MoodleProvider.getPublicKey();
@@ -61,21 +70,31 @@ export class Login extends Component<LoginProps> {
     }));
   }
 
-  private login() {
+  private manualLogin() {
+    this.showLoading = true;
+    this.encryptLogin(this.username, this.password).then((e) => {
+      this.login(e);
+    }).catch((e) => {
+      this.errorMessage = e.message;
+      this.showLoading = false;
+      this.showError = true;
+    });
+  }
+
+  private login(encrytedLogin: string) {
     this.showLoading = true;
     const resetAction = StackActions.reset({
       index: 0,
       actions: [NavigationActions.navigate({routeName: 'Plan'})],
     });
-    this.encryptLogin(this.username, this.password).then((e) => {
-      MoodleProvider.login(e).then((m) => {
-        AsyncStorage.setItem('moodleSession', m);
-        this.props.navigation.dispatch(resetAction);
-      }).catch((e) => {
-        this.errorMessage = e.message;
-        this.showLoading = false;
-        this.showError = true;
-      })
+    MoodleProvider.login(encrytedLogin).then((m) => {
+      AsyncStorage.setItem('userpass', encrytedLogin);
+      AsyncStorage.setItem('moodleSession', m);
+      this.props.navigation.dispatch(resetAction);
+    }).catch((e) => {
+      this.errorMessage = e.message;
+      this.showLoading = false;
+      this.showError = true;
     });
   }
 
@@ -95,7 +114,7 @@ export class Login extends Component<LoginProps> {
                            onChangeText={this.handleUsernameUpdate.bind(this)}/>
                 <FormInput placeholder={'Passwort'} placeholderTextColor={'lightgrey'} secureTextEntry={true}
                            value={this.props.password} onChangeText={this.handlePasswordUpdate.bind(this)}/>
-                <Button label={'Log In'} onPress={this.login.bind(this)}/>
+                <Button label={'Log In'} onPress={this.manualLogin.bind(this)}/>
               </View>
             </View>
           </ImageBackground>

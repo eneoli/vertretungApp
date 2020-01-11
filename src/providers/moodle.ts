@@ -21,6 +21,10 @@ export class MoodleProvider {
     return (((await fetch(this.middlewareUrl + "/publickey")).text()));
   }
 
+  public static async moodleSessionValid(moodleSession: string) {
+    return await (await fetch(MoodleProvider.middlewareUrl + '/validateSession?moodleSession=' + moodleSession)).json();
+  }
+
   public static async getPlan(day: 'today' | 'tomorrow', moodleSession: string): Promise<any> {
     return await (await fetch(MoodleProvider.middlewareUrl + "/fetch/" + day + "?moodleSession=" + moodleSession)).json();
   }
