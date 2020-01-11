@@ -14,22 +14,56 @@ moment.locale('de');
 interface ItemProps {
   entry: any;
   day: Date;
+  hide: boolean;
 }
 
 @observer
 export class Item extends Component<ItemProps> {
   @observable
   private showDetail: boolean = false;
+  @observable
+  private hide: boolean;
 
   @action
   private toggleDetail() {
     this.showDetail = !this.showDetail;
   }
 
+  constructor(props: ItemProps) {
+    super(props);
+    this.hide = this.props.hide;
+  }
+
+  private getRootStyles() {
+    return StyleSheet.create({  itemWrapper: {
+        display: "flex",
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignContent: 'space-around',
+        alignSelf: 'center',
+        flexWrap: "wrap",
+        backgroundColor: '#FF4136',
+        borderRadius: 5,
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 6,
+        },
+        shadowOpacity: 0.37,
+        shadowRadius: 7.49,
+        elevation: 12,
+        width: '80%',
+        minHeight: 30,
+        margin: 15,
+        textAlign: 'center',
+        opacity: this.hide ? 0.7 : 1,
+      },});
+  }
+
   public render(): React.ReactNode {
     return (
         <View>
-          <View style={styles.itemWrapper} onTouchEnd={this.toggleDetail.bind(this)}>
+          <View style={this.getRootStyles().itemWrapper} onTouchEnd={this.toggleDetail.bind(this)}>
             <Text style={styles.caption}>{this.props.entry.item.hour}</Text>
             <Text style={styles.text}>{this.props.entry.item.class}</Text>
             <Text style={styles.text}>{this.props.entry.item.subject}</Text>
@@ -78,29 +112,6 @@ export class Item extends Component<ItemProps> {
 }
 
 const styles = StyleSheet.create({
-  itemWrapper: {
-    display: "flex",
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignContent: 'space-around',
-    alignSelf: 'center',
-    flexWrap: "wrap",
-    backgroundColor: '#FF4136',
-    borderRadius: 5,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 6,
-    },
-    shadowOpacity: 0.37,
-    shadowRadius: 7.49,
-
-    elevation: 12,
-    width: '80%',
-    minHeight: 30,
-    margin: 15,
-    textAlign: 'center',
-  },
   text: {
     padding: 0,
     margin: 20,

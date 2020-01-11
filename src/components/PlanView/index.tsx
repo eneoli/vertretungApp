@@ -27,7 +27,7 @@ export class PlanView extends Component<IPlanViewProps> {
           <InfoHeader day={this.props.plan.date} missingTeachers={this.props.plan.missingTeachers}
                       usedTeachers={this.props.plan.usedTeachers}/>
           <FlatList scrollEnabled={false} data={this.props.plan.lessons} renderItem={(e) => {
-            return <Item entry={e} day={(this.props.plan.date)}/>;
+            return <Item hide={true} entry={e} day={(this.props.plan.date)}/>;
           }}/>
           <Text>Alle Angaben ohne Gewähr!</Text>
         </ScrollView>

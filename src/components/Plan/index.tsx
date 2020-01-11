@@ -8,8 +8,12 @@ import {NavigationStackScreenProps} from "react-navigation-stack";
 import {SceneMap, TabBar, TabView} from "react-native-tab-view";
 import {PlanView} from "../PlanView";
 
+interface IPlanProps {
+  showSettings: boolean;
+}
+
 @observer
-export class Plan extends Component<NavigationStackScreenProps> {
+export class Plan extends Component<IPlanProps> {
   @observable
   private moodleSession: string = '';
   @observable
@@ -30,12 +34,10 @@ export class Plan extends Component<NavigationStackScreenProps> {
       MoodleProvider.getPlan('today', this.moodleSession).then((plan) => {
         this.today = plan;
         console.log("Set!");
-        this.props.navigation.setParams({title: "Hi!"});
       });
       MoodleProvider.getPlan('tomorrow', this.moodleSession).then((plan) => {
         this.tomorrow = plan;
         console.log("Set!");
-        this.props.navigation.setParams({title: "Hi!"});
       })
     });
   }
@@ -43,6 +45,7 @@ export class Plan extends Component<NavigationStackScreenProps> {
   public render() {
     return this.today || this.tomorrow ? (
         <View style={styles.container}>
+          {this.props.showSettings ? <Text>Hi!</Text> : null}
 
           <TabView
               swipeEnabled={true}

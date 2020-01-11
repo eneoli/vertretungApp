@@ -19,6 +19,7 @@ import {Loader} from "../Loader";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
 import {Alert} from "../Alert";
+import navigationService from "../../providers/navigationService";
 
 interface LoginProps {
   username: string;
@@ -53,6 +54,7 @@ export class Login extends Component<LoginProps> {
 
   constructor(props: LoginProps) {
     super(props);
+    navigationService.setTopLevelNavigator(this.props.navigation);
     AsyncStorage.getItem('userpass', (error, result) => {
       if (!error && result) {
         this.login(result);

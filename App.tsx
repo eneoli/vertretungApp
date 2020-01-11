@@ -3,14 +3,24 @@ import {Login} from "./src/components/Login";
 import {createAppContainer, NavigationActions} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import {Plan} from "./src/components/Plan";
-import {Image, View} from 'react-native';
-import {Icon} from "react-native-elements";
+import {Image, TouchableOpacity, View} from 'react-native';
+import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
+import {faCog} from "@fortawesome/free-solid-svg-icons/faCog";
+import TouchableItem from "react-navigation-stack/lib/typescript/views/TouchableItem";
+import navigationService from "./src/providers/navigationService";
+import {Settings} from "./src/components/Settings";
 
 const icon = require('./assets/icon.png');
 
 
 export const MainNavigator = createStackNavigator({
   Login: {screen: Login},
+  Settings: {
+    screen: Settings,
+    navigationOptions: {
+      title: 'Einstellungen'
+    }
+  },
   Plan: {
     screen: Plan,
     navigationOptions: {
@@ -22,7 +32,10 @@ export const MainNavigator = createStackNavigator({
       },
       headerLeft: () => <View><Image source={icon} style={{width: 50, height: 50}}/>
       </View>,
-      headerRight: () => <Icon name={'settings'}/>
+      headerRight: () => <TouchableOpacity onPress={() => {
+        navigationService.navigate('Settings', {});
+      }
+      }><FontAwesomeIcon icon={faCog} size={25} style={{margin: 10}}/></TouchableOpacity>
     }
   },
 });
