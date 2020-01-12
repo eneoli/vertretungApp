@@ -1,4 +1,4 @@
-package com.vertretungsplanapp;
+package cc.enes_online.vertretungsplanapp.handrup;
 
 import android.content.Intent;
 import android.os.Bundle;

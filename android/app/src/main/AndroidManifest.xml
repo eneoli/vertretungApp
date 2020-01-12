@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.vertretungsplanapp">
+  package="cc.enes_online.vertretungsplanapp.handrup">
 
     <uses-permission android:name="android.permission.INTERNET" />
 

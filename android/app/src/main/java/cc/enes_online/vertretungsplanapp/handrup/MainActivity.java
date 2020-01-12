@@ -1,4 +1,4 @@
-package com.vertretungsplanapp;
+package cc.enes_online.vertretungsplanapp.handrup;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
