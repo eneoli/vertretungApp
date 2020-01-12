@@ -117,7 +117,7 @@ export class Login extends Component<LoginProps> {
             <View style={styles.container}>
               <Image source={require('./../../../assets/icon.png')} style={styles.logo}/>
               <View style={styles.form}>
-                <FormInput autoCapitalize={'none'} placeholder={'Benutzername'} placeholderTextColor={'lightgrey'}
+                <FormInput autoCapitalize={'none'} autoCorrect={false} placeholder={'Benutzername'} placeholderTextColor={'lightgrey'}
                            value={this.props.username}
                            onChangeText={this.handleUsernameUpdate.bind(this)}/>
                 <FormInput placeholder={'Passwort'} placeholderTextColor={'lightgrey'} secureTextEntry={true}
