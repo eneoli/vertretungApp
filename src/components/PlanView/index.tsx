@@ -32,7 +32,7 @@ export class PlanView extends Component<IPlanViewProps> {
           <InfoHeader day={this.props.plan.date} missingTeachers={this.props.plan.missingTeachers}
                       usedTeachers={this.props.plan.usedTeachers}/>
           <FlatList scrollEnabled={false} data={this.props.plan.lessons} renderItem={(e: any) => {
-            if (this.props.studentClass == '-1') {
+            if (this.props.studentClass == null) {
               return <Item key={e.index} hide={false} entry={e} day={(this.props.plan.date)}/>
             } else {
               return <Item key={e.index} hide={!(this.props.studentClass == e.item.class.trim())} entry={e} day={(this.props.plan.date)}/>;
