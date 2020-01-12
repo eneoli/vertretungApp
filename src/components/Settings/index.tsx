@@ -70,8 +70,7 @@ export class Settings extends Component<ISettingsProps> {
             <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10, alignItems: 'flex-end'}}>
               <TouchableOpacity onPress={() => {
                 if (this.selectedYear == -1) {
-                  console.log('nothing');
-                  AsyncStorage.setItem('class', '-1');
+                  AsyncStorage.setItem('class', null);
                 } else {
                   if (!this.selectedClass || this.selectedYear > 10) {
                     AsyncStorage.setItem('class', '' + this.selectedYear);
