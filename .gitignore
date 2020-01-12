@@ -56,3 +56,4 @@ buck-out/
 *.jsbundle
 /keystore.jks
 /android/gradle.properties
+/encrypted_private_key
