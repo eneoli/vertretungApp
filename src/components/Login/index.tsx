@@ -20,6 +20,7 @@ import {observer} from "mobx-react";
 import {observable} from "mobx";
 import {Alert} from "../Alert";
 import navigationService from "../../providers/navigationService";
+import SplashScreen from "react-native-splash-screen";
 
 interface LoginProps {
   username: string;
@@ -50,6 +51,10 @@ export class Login extends Component<LoginProps> {
 
   private handlePasswordUpdate(e: string) {
     this.password = e;
+  }
+
+  componentDidMount(): void {
+    SplashScreen.hide();
   }
 
   constructor(props: LoginProps) {
@@ -112,7 +117,8 @@ export class Login extends Component<LoginProps> {
             <View style={styles.container}>
               <Image source={require('./../../../assets/icon.png')} style={styles.logo}/>
               <View style={styles.form}>
-                <FormInput placeholder={'Benutzername'} placeholderTextColor={'lightgrey'} value={this.props.username}
+                <FormInput autoCapitalize={'none'} placeholder={'Benutzername'} placeholderTextColor={'lightgrey'}
+                           value={this.props.username}
                            onChangeText={this.handleUsernameUpdate.bind(this)}/>
                 <FormInput placeholder={'Passwort'} placeholderTextColor={'lightgrey'} secureTextEntry={true}
                            value={this.props.password} onChangeText={this.handlePasswordUpdate.bind(this)}/>
