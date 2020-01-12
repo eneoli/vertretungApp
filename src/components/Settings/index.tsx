@@ -1,5 +1,5 @@
 import {Component} from "react";
-import {View, Text, Picker, TouchableOpacity, AsyncStorage} from "react-native";
+import {View, Text, Picker, AsyncStorage} from "react-native";
 import * as React from 'react';
 import {observable} from "mobx";
 import {observer} from "mobx-react";
@@ -26,11 +26,23 @@ export class Settings extends Component<ISettingsProps> {
     });
   }
 
+  componentWillUnmount(): void {
+    if (this.selectedYear == -1) {
+      AsyncStorage.setItem('class', '');
+    } else {
+      if (!this.selectedClass || this.selectedYear > 10) {
+        AsyncStorage.setItem('class', '' + this.selectedYear);
+      } else {
+        AsyncStorage.setItem('class', '' + this.selectedYear + this.selectedClass);
+      }
+    }
+  }
+
 
   public render(): React.ReactNode {
     return (
         <View>
-          <View style={{height: 600}}>
+          <View>
             <Text style={{fontSize: 20, margin: 10, marginBottom: 20}}>Hier kannst du deine Klasse einstellen, damit
               eventuelle Vertretungsstunden besonders hervorgehoben werden
               und du sie so besser im Blick hast.</Text>
@@ -38,7 +50,7 @@ export class Settings extends Component<ISettingsProps> {
             <Picker selectedValue={this.selectedYear} mode={'dropdown'} prompt={'Jahrgang'}
                     onValueChange={(v) => {
                       this.selectedYear = v;
-                      if (this.selectedYear > 10) {
+                      if (this.selectedYear > 10 || this.selectedYear == -1) {
                         this.selectedClass = null;
                       }
                     }}>
@@ -65,29 +77,6 @@ export class Settings extends Component<ISettingsProps> {
                     </Picker>
                   </View> : null
             }
-          </View>
-          <View>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10, alignItems: 'flex-end'}}>
-              <TouchableOpacity onPress={() => {
-                if (this.selectedYear == -1) {
-                  AsyncStorage.setItem('class', null);
-                } else {
-                  if (!this.selectedClass || this.selectedYear > 10) {
-                    AsyncStorage.setItem('class', '' + this.selectedYear);
-                  } else {
-                    AsyncStorage.setItem('class', '' + this.selectedYear + this.selectedClass);
-                  }
-                }
-                this.props.navigation.goBack();
-              }}>
-                <Text style={{color: 'green', fontSize: 25}}>Übernehmen</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => {
-                this.props.navigation.goBack();
-              }}>
-                <Text style={{color: 'red', fontSize: 25}}>Abbrechen</Text>
-              </TouchableOpacity>
-            </View>
           </View>
         </View>
     );
