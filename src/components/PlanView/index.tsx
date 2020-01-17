@@ -1,6 +1,6 @@
 import {Component, ReactNode} from "react";
 import {AsyncStorage, FlatList, RefreshControl, ScrollView, Text} from "react-native";
-import {Item} from "../Plan/Item";
+import {Item} from "./Item";
 import * as React from 'react';
 import {InfoHeader} from "../InfoHeader";
 import {observer} from "mobx-react";
