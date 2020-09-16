@@ -17,6 +17,7 @@ import {
 import moment from 'moment';
 import {PlainText} from "./PlainText";
 import {IconText} from "./IconText";
+import {ThemeContext} from "../themeContext/theme-context";
 
 moment.locale('de');
 
@@ -28,6 +29,9 @@ interface ItemProps {
 
 @observer
 export class Item extends Component<ItemProps> {
+
+  static contextType = ThemeContext;
+
   @observable
   private showDetail: boolean = false;
   @observable
@@ -71,6 +75,21 @@ export class Item extends Component<ItemProps> {
     });
   }
 
+  private getModalStyles() {
+
+    const darkMode = this.context.theme === 'dark';
+
+    return StyleSheet.create({
+      view: {
+        height: 'auto',
+        width: 'auto',
+        backgroundColor: darkMode ? '#322f3d' : 'white',
+        borderRadius: 5,
+        margin: 20
+      }
+    });
+  }
+
   public render(): React.ReactNode {
     return (
         <View>
@@ -84,7 +103,7 @@ export class Item extends Component<ItemProps> {
           </View>
           <Modal onBackButtonPress={this.toggleDetail.bind(this)} onBackdropPress={this.toggleDetail.bind(this)}
                  isVisible={this.showDetail}>
-            <View style={{height: 'auto', width: 'auto', backgroundColor: 'white', borderRadius: 5, margin: 20}}>
+            <View style={this.getModalStyles().view}>
               <IconText text={this.props.entry.item.hour + ' Stunde, ' + moment(this.props.day).format('dd DD.MM')}
                         icon={faCalendarDay}/>
               <IconText text={this.props.entry.item.class} icon={faUserFriends}/>
