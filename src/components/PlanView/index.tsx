@@ -5,6 +5,7 @@ import * as React from 'react';
 import {InfoHeader} from "../InfoHeader";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
+import {ThemeContext} from "../themeContext/theme-context";
 
 interface IPlanViewProps {
   plan: any;
@@ -14,6 +15,9 @@ interface IPlanViewProps {
 
 @observer
 export class PlanView extends Component<IPlanViewProps> {
+
+  static contextType = ThemeContext;
+
   @observable
   private refreshing: boolean = false;
 
@@ -24,6 +28,9 @@ export class PlanView extends Component<IPlanViewProps> {
   public render(): ReactNode {
     return (
         <ScrollView
+            style={{
+              backgroundColor: this.context.theme == 'light' ? 'white' : '#282c3d',
+            }}
             refreshControl={<RefreshControl refreshing={this.refreshing} onRefresh={() => {
               this.refreshing = true;
               this.props.onRefresh();
@@ -35,7 +42,8 @@ export class PlanView extends Component<IPlanViewProps> {
             if (this.props.studentClass == null) {
               return <Item key={e.index} hide={false} entry={e} day={(this.props.plan.date)}/>
             } else {
-              return <Item key={e.index} hide={!(this.props.studentClass == e.item.class.trim())} entry={e} day={(this.props.plan.date)}/>;
+              return <Item key={e.index} hide={!(this.props.studentClass == e.item.class.trim())} entry={e}
+                           day={(this.props.plan.date)}/>;
             }
           }}/>
           <Text>Alle Angaben ohne Gewähr!</Text>
