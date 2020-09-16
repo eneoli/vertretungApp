@@ -1,5 +1,5 @@
 import {Component, ReactNode} from "react";
-import {AsyncStorage, FlatList, RefreshControl, ScrollView, Text} from "react-native";
+import {FlatList, RefreshControl, ScrollView, Text} from "react-native";
 import {Item} from "./Item";
 import * as React from 'react';
 import {InfoHeader} from "../InfoHeader";
