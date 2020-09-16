@@ -1,6 +1,6 @@
 import {Component} from "react";
 import * as React from "react";
-import {View, Text, AsyncStorage, StyleSheet, ActivityIndicator} from "react-native";
+import {View, AsyncStorage, StyleSheet} from "react-native";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
 import {MoodleProvider} from "../../providers/moodle";
@@ -8,6 +8,7 @@ import {SceneMap, TabBar, TabView} from "react-native-tab-view";
 import {PlanView} from "../PlanView";
 import {NavigationScreenProp} from "react-navigation";
 import {Loader} from "../Loader";
+import {ThemeContext} from "../themeContext/theme-context";
 
 interface IPlanProps {
   navigation: NavigationScreenProp<this>;
@@ -15,6 +16,9 @@ interface IPlanProps {
 
 @observer
 export class Plan extends Component<IPlanProps> {
+
+  static contextType = ThemeContext;
+
   @observable
   private moodleSession: string = '';
   @observable
@@ -54,29 +58,34 @@ export class Plan extends Component<IPlanProps> {
   }
 
   public render() {
-    return !this.loading ? (
-        <View style={styles.container}>
-          <TabView
-              swipeEnabled={true}
-              renderTabBar={(props) => <TabBar     {...props}
-                                                   indicatorStyle={{backgroundColor: '#FF3333'}}
-                                                   activeColor={'#FF3333'}
-                                                   inactiveColor={'lightgray'}
-                                                   style={{backgroundColor: 'white'}}/>}
-              navigationState={{
-                index: this.index, routes: [{key: 'first', title: 'Heute'},
-                  {key: 'second', title: 'Morgen'}]
-              }}
-              renderScene={SceneMap({
-                first: () => <PlanView plan={this.today} onRefresh={this.loadPlans.bind(this)}
-                                       studentClass={this.studentClass}/>,
-                second: () => <PlanView plan={this.tomorrow} onRefresh={this.loadPlans.bind(this)}
-                                        studentClass={this.studentClass}/>
-              })}
-              onIndexChange={(i) => this.index = i}
-          />
-        </View>
-    ) : <Loader visible={true} background={false}/>;
+    return (
+        !this.loading ? (
+            <View style={styles.container}>
+              <TabView
+                  swipeEnabled={true}
+                  renderTabBar={(props) => (
+                      <TabBar
+                          {...props}
+                          indicatorStyle={{backgroundColor: '#FF3333'}}
+                          activeColor={'#FF3333'}
+                          inactiveColor={'lightgray'}
+                          style={{backgroundColor: this.context.theme == 'light' ? 'white' : '#322f3d'}}/>
+                  )}
+                  navigationState={{
+                    index: this.index, routes: [{key: 'first', title: 'Heute'},
+                      {key: 'second', title: 'Morgen'}]
+                  }}
+                  renderScene={SceneMap({
+                    first: () => <PlanView plan={this.today} onRefresh={this.loadPlans.bind(this)}
+                                           studentClass={this.studentClass}/>,
+                    second: () => <PlanView plan={this.tomorrow} onRefresh={this.loadPlans.bind(this)}
+                                            studentClass={this.studentClass}/>
+                  })}
+                  onIndexChange={(i) => this.index = i}
+              />
+            </View>
+        ) : <Loader visible={true} background={false}/>
+    )
   }
 }
 
