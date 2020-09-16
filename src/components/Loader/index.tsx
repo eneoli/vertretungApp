@@ -1,8 +1,9 @@
-import {Component, useState} from "react";
+import {Component} from "react";
 import {ActivityIndicator, View, StyleSheet, Modal, Animated, Easing} from "react-native";
 import * as React from "react";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
+import {ThemeContext} from "../themeContext/theme-context";
 
 interface LoaderProps {
   visible: boolean;
@@ -11,6 +12,8 @@ interface LoaderProps {
 
 @observer
 export class Loader extends Component<LoaderProps> {
+
+  static contextType = ThemeContext;
 
   static defaultProps = {
     background: true,
@@ -36,6 +39,9 @@ export class Loader extends Component<LoaderProps> {
   }
 
   private getStyles(background: boolean) {
+
+    const darkMode = this.context.theme === 'dark';
+
     return StyleSheet.create({
       modalBackground: {
         position: 'absolute',
@@ -47,7 +53,7 @@ export class Loader extends Component<LoaderProps> {
         bottom: 0,
         alignItems: 'center',
         justifyContent: 'space-evenly',
-        backgroundColor: background ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0)',
+        backgroundColor: background ? 'rgba(0,0,0,0.5)' : (darkMode ? '#322f3d' : 'rgba(0,0,0,0)'),
         zIndex: 9999,
       }
     });
