@@ -1,9 +1,11 @@
 import {Component} from "react";
-import {View, Text, Picker, AsyncStorage} from "react-native";
+import {View, Text, AsyncStorage, StyleSheet} from "react-native";
 import * as React from 'react';
 import {observable} from "mobx";
 import {observer} from "mobx-react";
 import {NavigationScreenProp} from "react-navigation";
+import {Picker} from '@react-native-community/picker';
+import {ThemeContext} from "../themeContext/theme-context";
 
 interface ISettingsProps {
   navigation: NavigationScreenProp<this>;
@@ -11,10 +13,15 @@ interface ISettingsProps {
 
 @observer
 export class Settings extends Component<ISettingsProps> {
+
+  static contextType = ThemeContext;
+
   @observable
   private selectedYear: number = -1;
   @observable
   private selectedClass: string = null;
+  @observable
+  private theme: string;
   private classes = [5, 6, 7, 8, 9, 10, 11, 12, 13];
   private classLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
 
@@ -38,46 +45,72 @@ export class Settings extends Component<ISettingsProps> {
     }
   }
 
+  private getStyles() {
+    const darkMode = this.context.theme === 'dark';
+    return StyleSheet.create({
+      view: {
+        backgroundColor: darkMode ? '#282c3d' : 'white',
+        height: '100%'
+      },
+      headerText: {
+        fontSize: 20,
+        margin: 10,
+        marginBottom: 20,
+        color: darkMode ? 'white' : 'black'
+      },
+      fieldText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: darkMode ? 'white' : 'black',
+      },
+      pickerItems: {
+        color: darkMode ? 'white' : 'black',
+        backgroundColor: 'red',
+      }
+    });
+  }
 
   public render(): React.ReactNode {
     return (
-        <View>
-          <View>
-            <Text style={{fontSize: 20, margin: 10, marginBottom: 20}}>Hier kannst du deine Klasse einstellen, damit
-              eventuelle Vertretungsstunden besonders hervorgehoben werden
-              und du sie so besser im Blick hast.</Text>
-            <Text style={{fontSize: 18, fontWeight: 'bold'}}>Jahrgang</Text>
-            <Picker selectedValue={this.selectedYear} mode={'dropdown'} prompt={'Jahrgang'}
-                    onValueChange={(v) => {
-                      this.selectedYear = v;
-                      if (this.selectedYear > 10 || this.selectedYear == -1) {
-                        this.selectedClass = null;
-                      }
-                    }}>
-              <Picker.Item label={'Nicht angeben'} value={-1}/>
-              {
-                this.classes.map((i) => {
-                  return <Picker.Item label={'' + i} value={i}/>
-                })
-              }
-            </Picker>
+        <View style={this.getStyles().view}>
+          <Text style={this.getStyles().headerText}>Hier kannst du deine Klasse einstellen, damit
+            eventuelle Vertretungsstunden besonders hervorgehoben werden
+            und du sie so besser im Blick hast.</Text>
+          <Text style={this.getStyles().fieldText}>Jahrgang</Text>
+          <Picker selectedValue={this.selectedYear} mode={'dialog'} prompt={'Jahrgang'}
+                  itemStyle={this.getStyles().pickerItems}
+                  onValueChange={(v) => {
+                    this.selectedYear = parseInt(v.toString(), 10);
+                    if (this.selectedYear > 10 || this.selectedYear == -1) {
+                      this.selectedClass = null;
+                    }
+                  }}>
+            <Picker.Item label={'Nicht angeben'} value={-1}/>
             {
-              this.selectedYear <= 10 && this.selectedYear != -1 ?
-                  <View>
-                    <Text style={{fontSize: 18, fontWeight: 'bold'}}>Klasse</Text>
-                    <Picker selectedValue={this.selectedClass} mode={'dropdown'} prompt={'Klasse'}
-                            onValueChange={(v) => {
-                              this.selectedClass = v
-                            }}>
-                      {
-                        this.classLetters.map((i) => {
-                          return <Picker.Item label={i} value={i}/>
-                        })
-                      }
-                    </Picker>
-                  </View> : null
+              this.classes.map((i) => {
+                return <Picker.Item label={'' + i} value={i}/>
+              })
             }
-          </View>
+          </Picker>
+          {
+            this.selectedYear <= 10 && this.selectedYear != -1 ?
+                <View>
+                  <Text style={this.getStyles().fieldText}>Klasse</Text>
+                  <Picker selectedValue={this.selectedClass}
+                          mode={'dialog'}
+                          prompt={'Klasse'}
+                          itemStyle={this.getStyles().pickerItems}
+                          onValueChange={(v) => {
+                            this.selectedClass = v.toString();
+                          }}>
+                    {
+                      this.classLetters.map((i) => {
+                        return <Picker.Item label={i} value={i}/>
+                      })
+                    }
+                  </Picker>
+                </View> : null
+          }
         </View>
     );
   }
