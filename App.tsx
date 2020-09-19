@@ -56,7 +56,9 @@ export const createNavigator = (darkMode: boolean) => createStackNavigator({
               </TouchableOpacity>
               {
                 visible && (
-                    <Info/>
+                    <Info onClose={() => {
+                      setVisible(false);
+                    }}/>
                 )
               }
             </View>
