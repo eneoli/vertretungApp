@@ -8,8 +8,7 @@ import {
   Image,
   StatusBar,
   TouchableOpacity,
-  View,
-  Text
+  View
 } from 'react-native';
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faCog} from "@fortawesome/free-solid-svg-icons/faCog";
