@@ -3,7 +3,13 @@ import {Login} from "./src/components/Login";
 import {createAppContainer, NavigationActions} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import {Plan} from "./src/components/Plan";
-import {AsyncStorage, Image, Modal, Platform, Text, TouchableOpacity, View} from 'react-native';
+import {
+  AsyncStorage,
+  Image,
+  StatusBar,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faCog} from "@fortawesome/free-solid-svg-icons/faCog";
 import navigationService from "./src/providers/navigationService";
@@ -121,6 +127,7 @@ export default class App extends Component {
           theme: !this.lightMode ? 'dark' : 'light',
           setTheme: action((v) => {
             if (this.lightMode !== (v === 'light')) {
+              StatusBar.setBackgroundColor('#000000');
               this.lightMode = (v === 'light');
               this.navigator = createNavigator(!this.lightMode);
               this.navigator.router.getStateForAction = createNavigatorStateFunction(this.navigator);
