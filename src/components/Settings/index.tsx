@@ -1,5 +1,5 @@
 import {Component} from "react";
-import {View, Text, AsyncStorage, StyleSheet} from "react-native";
+import {View, Text, AsyncStorage, StyleSheet, TouchableOpacity} from "react-native";
 import * as React from 'react';
 import {observable} from "mobx";
 import {observer} from "mobx-react";
@@ -78,8 +78,11 @@ export class Settings extends Component<ISettingsProps> {
         fontWeight: 'bold',
         color: darkMode ? 'white' : 'black',
       },
-      pickerItems: {
+      picker: {
         color: darkMode ? 'white' : 'black',
+      },
+      pickerItems: {
+        color: 'black',
         backgroundColor: 'red',
       }
     });
@@ -93,6 +96,7 @@ export class Settings extends Component<ISettingsProps> {
             und du sie so besser im Blick hast.</Text>
           <Text style={this.getStyles().fieldText}>Jahrgang</Text>
           <Picker selectedValue={this.selectedYear} mode={'dialog'} prompt={'Jahrgang'}
+                  style={this.getStyles().picker}
                   itemStyle={this.getStyles().pickerItems}
                   onValueChange={(v) => {
                     this.selectedYear = parseInt(v.toString(), 10);
@@ -100,10 +104,10 @@ export class Settings extends Component<ISettingsProps> {
                       this.selectedClass = null;
                     }
                   }}>
-            <Picker.Item label={'Nicht angeben'} value={-1}/>
+            <Picker.Item label={'Nicht angeben'} value={-1} color={this.getStyles().pickerItems.color}/>
             {
               this.classes.map((i) => {
-                return <Picker.Item label={'' + i} value={i}/>
+                return <Picker.Item label={'' + i} value={i} color={this.getStyles().pickerItems.color}/>
               })
             }
           </Picker>
@@ -115,12 +119,13 @@ export class Settings extends Component<ISettingsProps> {
                           mode={'dialog'}
                           prompt={'Klasse'}
                           itemStyle={this.getStyles().pickerItems}
+                          style={this.getStyles().picker}
                           onValueChange={(v) => {
                             this.selectedClass = v.toString();
                           }}>
                     {
                       this.classLetters.map((i) => {
-                        return <Picker.Item label={i} value={i}/>
+                        return <Picker.Item label={i} value={i} color={this.getStyles().pickerItems.color}/>
                       })
                     }
                   </Picker>
@@ -131,13 +136,14 @@ export class Settings extends Component<ISettingsProps> {
             <Picker selectedValue={this.theme}
                     mode={'dialog'}
                     prompt={'Aussehen'}
+                    style={this.getStyles().picker}
                     itemStyle={this.getStyles().pickerItems}
                     onValueChange={(v) => {
                       this.theme = v.toString();
                     }}>
-              <Picker.Item label={'Systemeinstellung'} value={'system'}/>
-              <Picker.Item label={'Hell'} value={'light'}/>
-              <Picker.Item label={'Dunkel'} value={'dark'}/>
+              <Picker.Item label={'Systemeinstellung'} value={'system'} color={this.getStyles().pickerItems.color}/>
+              <Picker.Item label={'Hell'} value={'light'} color={this.getStyles().pickerItems.color}/>
+              <Picker.Item label={'Dunkel'} value={'dark'} color={this.getStyles().pickerItems.color}/>
             </Picker>
           </View>
         </View>
