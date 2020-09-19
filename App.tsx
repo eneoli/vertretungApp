@@ -8,7 +8,8 @@ import {
   Image,
   StatusBar,
   TouchableOpacity,
-  View
+  View,
+  Text
 } from 'react-native';
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faCog} from "@fortawesome/free-solid-svg-icons/faCog";
@@ -46,6 +47,9 @@ export const createNavigator = (darkMode: boolean) => createStackNavigator({
         shadowRadius: 0,
         elevation: 0,
         backgroundColor: darkMode ? '#322f3d' : '#b41019',
+      },
+      headerTitleContainerStyle: {
+        justifyContent: 'center',
       },
       headerLeft: () => {
         let [visible, setVisible] = useState(false);
