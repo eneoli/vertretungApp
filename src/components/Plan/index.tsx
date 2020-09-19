@@ -1,6 +1,6 @@
 import {Component} from "react";
 import * as React from "react";
-import {View, AsyncStorage, StyleSheet} from "react-native";
+import {View, AsyncStorage, StyleSheet, StatusBar} from "react-native";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
 import {MoodleProvider} from "../../providers/moodle";
@@ -45,6 +45,10 @@ export class Plan extends Component<IPlanProps> {
     this.loadPlans();
     this.readStudentClass();
     this.loading = false;
+  }
+
+  public componentDidMount(): void {
+    StatusBar.setBackgroundColor(this.context.theme === 'light' ? '#b41019' : '#322f3d');
   }
 
   public async loadPlans() {
