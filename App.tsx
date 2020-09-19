@@ -1,9 +1,9 @@
-import React, {Component, ReactNode} from 'react';
+import React, {Component, ReactNode, useState} from 'react';
 import {Login} from "./src/components/Login";
 import {createAppContainer, NavigationActions} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import {Plan} from "./src/components/Plan";
-import {AsyncStorage, Image, TouchableOpacity, View} from 'react-native';
+import {AsyncStorage, Image, Modal, Platform, Text, TouchableOpacity, View} from 'react-native';
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faCog} from "@fortawesome/free-solid-svg-icons/faCog";
 import navigationService from "./src/providers/navigationService";
@@ -12,6 +12,8 @@ import {ThemeContext} from './src/components/themeContext/theme-context';
 import {observer} from "mobx-react";
 import {action, observable} from "mobx";
 import {Appearance} from "react-native-appearance";
+import _ from 'lodash';
+import {Info} from "./src/components/Info/info";
 
 const icon = require('./assets/icon.png');
 
@@ -22,9 +24,9 @@ export const createNavigator = (darkMode: boolean) => createStackNavigator({
     screen: Settings,
     navigationOptions: {
       title: 'Einstellungen',
-      headerTintColor: darkMode ? 'white' : 'black',
+      headerTintColor: darkMode ? 'white' : 'white',
       headerStyle: {
-        backgroundColor: darkMode ? '#322f3d' : 'white',
+        backgroundColor: darkMode ? '#322f3d' : '#b41019',
       }
     },
   },
@@ -32,23 +34,33 @@ export const createNavigator = (darkMode: boolean) => createStackNavigator({
     screen: Plan,
     navigationOptions: {
       title: 'Vertretungsstunden',
-      headerTintColor: darkMode ? 'white' : 'black',
+      headerTintColor: darkMode ? 'white' : 'white',
       headerStyle: {
         shadowOpacity: 0,
         shadowRadius: 0,
         elevation: 0,
-        backgroundColor: darkMode ? '#322f3d' : 'white',
+        backgroundColor: darkMode ? '#322f3d' : '#b41019',
       },
-      headerLeft: () => (
-          <View>
-            <Image source={icon} style={{width: 50, height: 50}}/>
-          </View>
-      ),
+      headerLeft: () => {
+        let [visible, setVisible] = useState(false);
+        return (
+            <View>
+              <TouchableOpacity onPress={() => setVisible(true)}>
+                <Image source={icon} style={{width: 40, height: 40, margin: 5}}/>
+              </TouchableOpacity>
+              {
+                visible && (
+                    <Info/>
+                )
+              }
+            </View>
+        );
+      },
       headerRight: () => (<TouchableOpacity onPress={() => {
             navigationService.navigate('Settings', {});
           }
           }>
-            <FontAwesomeIcon icon={faCog} size={25} style={{margin: 10, color: darkMode ? 'white' : 'black'}}/>
+            <FontAwesomeIcon icon={faCog} size={25} style={{margin: 10, color: 'white'}}/>
           </TouchableOpacity>
       )
     }
@@ -76,25 +88,43 @@ const createNavigatorStateFunction = (navigator) => {
 @observer
 export default class App extends Component {
 
-  private readonly navigator;
+  @observable
+  private navigator;
 
   @observable
   private lightMode: boolean;
 
   constructor(props: object) {
     super(props);
-    const colorScheme = Appearance.getColorScheme();
-    this.lightMode = colorScheme === 'light' || colorScheme === 'no-preference';
+    AsyncStorage.getItem('theme').then((theme) => {
+      if (theme === 'system') {
+        const colorScheme = Appearance.getColorScheme();
+        this.lightMode = colorScheme === 'light' || colorScheme === 'no-preference';
+      } else {
+        this.lightMode = (theme === 'light');
+      }
+
+      this.navigator = createNavigator(!this.lightMode);
+      this.navigator.router.getStateForAction = createNavigatorStateFunction(this.navigator);
+    });
+
     this.navigator = createNavigator(!this.lightMode);
     this.navigator.router.getStateForAction = createNavigatorStateFunction(this.navigator);
   }
 
   public render(): ReactNode {
+    if (_.isUndefined(this.lightMode)) {
+      return null;
+    }
     return (
         <ThemeContext.Provider value={{
           theme: !this.lightMode ? 'dark' : 'light',
           setTheme: action((v) => {
-            // todo implement
+            if (this.lightMode !== (v === 'light')) {
+              this.lightMode = (v === 'light');
+              this.navigator = createNavigator(!this.lightMode);
+              this.navigator.router.getStateForAction = createNavigatorStateFunction(this.navigator);
+            }
           }),
         }}>
           {
