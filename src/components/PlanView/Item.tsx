@@ -56,7 +56,7 @@ export class Item extends Component<ItemProps> {
         alignContent: 'space-around',
         alignSelf: 'center',
         flexWrap: "wrap",
-        backgroundColor: '#FF4136',
+        backgroundColor: '#b41019',
         borderRadius: 5,
         shadowColor: "#000",
         shadowOffset: {
