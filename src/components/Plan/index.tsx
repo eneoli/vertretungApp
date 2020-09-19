@@ -67,9 +67,9 @@ export class Plan extends Component<IPlanProps> {
                       <TabBar
                           {...props}
                           indicatorStyle={{backgroundColor: '#FF3333'}}
-                          activeColor={'#FF3333'}
+                          activeColor={this.context.theme == 'light' ? 'white' : '#b41019'}
                           inactiveColor={'lightgray'}
-                          style={{backgroundColor: this.context.theme == 'light' ? 'white' : '#322f3d'}}/>
+                          style={{backgroundColor: this.context.theme == 'light' ? '#b41019' : '#322f3d'}}/>
                   )}
                   navigationState={{
                     index: this.index, routes: [{key: 'first', title: 'Heute'},
