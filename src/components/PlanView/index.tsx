@@ -1,5 +1,5 @@
 import {Component, ReactNode} from "react";
-import {FlatList, RefreshControl, ScrollView, Text} from "react-native";
+import {FlatList, RefreshControl, ScrollView, StatusBar, Text} from "react-native";
 import {Item} from "./Item";
 import * as React from 'react';
 import {InfoHeader} from "../InfoHeader";
@@ -29,7 +29,7 @@ export class PlanView extends Component<IPlanViewProps> {
     return (
         <ScrollView
             style={{
-              backgroundColor: this.context.theme == 'light' ? 'white' : '#282c3d',
+              backgroundColor: this.context.theme == 'light' ? '#FFFFFF' : '#282c3d',
             }}
             refreshControl={<RefreshControl refreshing={this.refreshing} onRefresh={() => {
               this.refreshing = true;
