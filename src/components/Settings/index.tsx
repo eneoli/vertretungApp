@@ -6,6 +6,7 @@ import {observer} from "mobx-react";
 import {NavigationScreenProp} from "react-navigation";
 import {Picker} from '@react-native-community/picker';
 import {ThemeContext} from "../themeContext/theme-context";
+import {Appearance} from "react-native-appearance";
 
 interface ISettingsProps {
   navigation: NavigationScreenProp<this>;
@@ -31,6 +32,10 @@ export class Settings extends Component<ISettingsProps> {
       this.selectedYear = parseInt(studentClass.replace(/[a-z]/g, ""), 10);
       this.selectedClass = studentClass.replace(/[0-9]/g, "");
     });
+
+    AsyncStorage.getItem('theme').then((theme) => {
+      this.theme = theme.toString() || 'system';
+    });
   }
 
   componentWillUnmount(): void {
@@ -42,6 +47,16 @@ export class Settings extends Component<ISettingsProps> {
       } else {
         AsyncStorage.setItem('class', '' + this.selectedYear + this.selectedClass);
       }
+    }
+
+    AsyncStorage.setItem('theme', this.theme);
+    const colorScheme = Appearance.getColorScheme();
+    const systemLightMode = colorScheme === 'light' || colorScheme === 'no-preference';
+
+    if (this.theme === 'system') {
+      this.context.setTheme(systemLightMode ? 'light' : 'dark');
+    } else {
+      this.context.setTheme(this.theme);
     }
   }
 
@@ -111,6 +126,20 @@ export class Settings extends Component<ISettingsProps> {
                   </Picker>
                 </View> : null
           }
+          <View>
+            <Text style={this.getStyles().fieldText}>Aussehen</Text>
+            <Picker selectedValue={this.theme}
+                    mode={'dialog'}
+                    prompt={'Aussehen'}
+                    itemStyle={this.getStyles().pickerItems}
+                    onValueChange={(v) => {
+                      this.theme = v.toString();
+                    }}>
+              <Picker.Item label={'Systemeinstellung'} value={'system'}/>
+              <Picker.Item label={'Hell'} value={'light'}/>
+              <Picker.Item label={'Dunkel'} value={'dark'}/>
+            </Picker>
+          </View>
         </View>
     );
   }
