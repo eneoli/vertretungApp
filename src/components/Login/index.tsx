@@ -1,4 +1,4 @@
-import {Component, SyntheticEvent} from "react";
+import {Component} from "react";
 import {
   Image,
   View,
@@ -115,7 +115,7 @@ export class Login extends Component<LoginProps> {
                  }}/>
           <ImageBackground style={styles.background} source={require('./../../../assets/background.png')}>
             <View style={styles.container}>
-              <Image source={require('./../../../assets/icon.png')} style={styles.logo}/>
+              <Image source={require('../../../assets/icon.png')} style={styles.logo}/>
               <View style={styles.form}>
                 <FormInput autoCapitalize={'none'} autoCorrect={false} placeholder={'Benutzername'} placeholderTextColor={'lightgrey'}
                            value={this.props.username}
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     flex: 1,
-    width: '50%',
+    width: '35%',
     resizeMode: 'contain',
     alignSelf: 'center',
   },
