@@ -7,6 +7,7 @@ import {NavigationScreenProp} from "react-navigation";
 import {Picker} from '@react-native-community/picker';
 import {ThemeContext} from "../themeContext/theme-context";
 import {Appearance} from "react-native-appearance";
+import {CoursePicker} from "./course-picker";
 
 interface ISettingsProps {
   navigation: NavigationScreenProp<this>;
@@ -21,6 +22,7 @@ export class Settings extends Component<ISettingsProps> {
   private selectedYear: number = -1;
   @observable
   private selectedClass: string = null;
+  private selectedCourses: string[] = [''];
   @observable
   private theme: string;
   private classes = [5, 6, 7, 8, 9, 10, 11, 12, 13];
@@ -31,6 +33,12 @@ export class Settings extends Component<ISettingsProps> {
     AsyncStorage.getItem('class').then((studentClass) => {
       this.selectedYear = parseInt(studentClass.replace(/[a-z]/g, ""), 10);
       this.selectedClass = studentClass.replace(/[0-9]/g, "");
+    });
+
+    AsyncStorage.getItem('courses').then((courses) => {
+      if (courses) {
+        this.selectedCourses = JSON.parse(courses);
+      }
     });
 
     AsyncStorage.getItem('theme').then((theme) => {
@@ -46,6 +54,10 @@ export class Settings extends Component<ISettingsProps> {
         AsyncStorage.setItem('class', '' + this.selectedYear);
       } else {
         AsyncStorage.setItem('class', '' + this.selectedYear + this.selectedClass);
+      }
+
+      if (this.selectedYear > 10) {
+        AsyncStorage.setItem('courses', JSON.stringify(this.selectedCourses));
       }
     }
 
@@ -130,6 +142,15 @@ export class Settings extends Component<ISettingsProps> {
                     }
                   </Picker>
                 </View> : null
+          }
+          {
+            this.selectedYear >= 11 && this.selectedYear != -1 && (
+                <View>
+                  <CoursePicker onChange={(courses) => {
+                    this.selectedCourses = courses;
+                  }} initialCourses={this.selectedCourses}/>
+                </View>
+            )
           }
           <View>
             <Text style={this.getStyles().fieldText}>Aussehen</Text>
