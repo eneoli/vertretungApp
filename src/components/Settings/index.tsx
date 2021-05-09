@@ -1,5 +1,5 @@
 import {Component} from "react";
-import {View, Text, StyleSheet} from "react-native";
+import {View, Text, StyleSheet, CheckBox} from "react-native";
 import * as React from 'react';
 import {observable} from "mobx";
 import {observer} from "mobx-react";
@@ -59,7 +59,8 @@ export class Settings extends Component<ISettingsProps> {
     return StyleSheet.create({
       view: {
         backgroundColor: darkMode ? '#282c3d' : 'white',
-        height: '100%'
+        height: '100%',
+        padding: 5,
       },
       headerText: {
         fontSize: 20,
@@ -78,6 +79,10 @@ export class Settings extends Component<ISettingsProps> {
       pickerItems: {
         color: 'black',
         backgroundColor: 'red',
+      },
+      checkboxContainer: {
+        flexDirection: 'row',
+        margin: 10,
       }
     });
   }
@@ -100,6 +105,10 @@ export class Settings extends Component<ISettingsProps> {
 
   private onThemeChange(theme: string) {
     this.settings.theme = theme as AppTheme;
+  }
+
+  private onToggleNotifications() {
+    this.settings.pushNotifications = !this.settings.pushNotifications;
   }
 
   public render(): React.ReactNode {
@@ -153,6 +162,10 @@ export class Settings extends Component<ISettingsProps> {
                 </View>
             )
           }
+          <View style={this.getStyles().checkboxContainer} onTouchEnd={this.onToggleNotifications.bind(this)}>
+            <CheckBox value={this.settings.pushNotifications}/>
+            <Text style={this.getStyles().fieldText}>Push-Benachrichtigungen</Text>
+          </View>
           <View>
             <Text style={this.getStyles().fieldText}>Aussehen</Text>
             <Picker mode={'dialog'}
