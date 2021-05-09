@@ -6,11 +6,6 @@ type FormInputProps = TextInputProps;
 
 export class FormInput extends Component<FormInputProps> {
 
-  static navigationOptions = {
-    title: 'Es geht!',
-    back: false,
-  };
-
   public render() {
     const {style, ...otherProps} = this.props;
     return (
