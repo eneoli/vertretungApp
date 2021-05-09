@@ -70,7 +70,7 @@ export class CoursePicker extends Component<CoursePickerProps, CoursePickerState
     if (!_.eq(this.props.initialCourses, prevProps.initialCourses)) {
       const initialCourses = [...this.props.initialCourses];
 
-      if (initialCourses[initialCourses.length - 1].trim()) {
+      if (!initialCourses.length || initialCourses[initialCourses.length - 1].trim()) {
         initialCourses.push('');
       }
 
