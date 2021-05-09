@@ -71,7 +71,7 @@ export class PlanView extends Component<PlanViewProps> {
                     data={this.props.plan.lessons}
                     renderItem={(lesson: ListRenderItemInfo<Lesson>) => (
                         <Item key={lesson.index}
-                              hide={this.isAffected(lesson.item)}
+                              hide={!this.isAffected(lesson.item)}
                               entry={lesson}
                               day={(this.props.plan.date)}/>
                     )}/>
