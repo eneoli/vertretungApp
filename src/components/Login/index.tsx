@@ -3,7 +3,7 @@ import {
   Image,
   View,
   StyleSheet,
-  ImageBackground,
+  ImageBackground, StatusBar,
 } from "react-native";
 import * as React from "react";
 import {FormInput} from "../FormInput/indx";
@@ -62,6 +62,7 @@ export class Login extends Component<LoginProps> {
   }
 
   componentDidMount(): void {
+    StatusBar.setBackgroundColor('#47698e');
     SplashScreen.hide();
   }
 
