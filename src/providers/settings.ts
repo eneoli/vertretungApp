@@ -58,6 +58,10 @@ export class SettingsManager {
     return this.settings;
   }
 
+  public setSettings(settings: AppContext) {
+    this.settings = settings;
+  }
+
   public setTheme(theme: AppTheme): void {
     this.settings.theme = theme;
   }
