@@ -45,15 +45,15 @@ export default class App extends Component {
     return newTheme;
   }
 
-  private static setStatusBarColor(themeType: ThemeType) {
-    StatusBar.setBackgroundColor(themeType === 'dark' ? '#000000' : '#b41019');
-  }
-
   @action
   private updateThemeType(newThemeType: ThemeType) {
     this.themeType = newThemeType;
-    App.setStatusBarColor(newThemeType);
     this.navigator = createNavigator(this.themeType);
+  }
+
+  public componentDidMount() {
+    // set color for login screen
+    StatusBar.setBackgroundColor('#496c92');
   }
 
   public render(): ReactNode {
