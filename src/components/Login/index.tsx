@@ -4,7 +4,6 @@ import {
   View,
   StyleSheet,
   ImageBackground,
-  AsyncStorage
 } from "react-native";
 import * as React from "react";
 import {FormInput} from "../FormInput/indx";
@@ -14,13 +13,14 @@ import {
   NavigationScreenProp, StackActions
 } from "react-navigation";
 import {MoodleProvider} from "../../providers/moodle";
-import * as JSEncrypt from "jsencrypt";
 import {Loader} from "../Loader";
 import {observer} from "mobx-react";
-import {observable} from "mobx";
+import {action, observable} from "mobx";
 import {Alert} from "../Alert";
 import navigationService from "../../providers/navigationService";
 import SplashScreen from "react-native-splash-screen";
+import {encryptLogin} from "../../providers/crypto";
+import {SettingsManager} from "../../providers/settings";
 
 interface LoginProps {
   username: string;
@@ -45,10 +45,14 @@ export class Login extends Component<LoginProps> {
   @observable
   private errorMessage: string = '';
 
+  private settingsManager: SettingsManager;
+
+  @action
   private handleUsernameUpdate(e: string) {
     this.username = e;
   }
 
+  @action
   private handlePasswordUpdate(e: string) {
     this.password = e;
   }
@@ -60,46 +64,50 @@ export class Login extends Component<LoginProps> {
   constructor(props: LoginProps) {
     super(props);
     navigationService.setTopLevelNavigator(this.props.navigation);
-    AsyncStorage.getItem('userpass', (error, result) => {
-      if (!error && result) {
-        this.login(result);
+
+    // auto login
+    this.settingsManager.load().then((settings) => {
+      const userAuth = settings.userAuth;
+      if (userAuth) {
+        this.login(userAuth);
       }
-    });
+    }).catch((error) => console.error(error));
   }
 
-  private async encryptLogin(username: string, password: string): Promise<string> {
-    let crypto = new JSEncrypt.JSEncrypt();
-    let publicKey = await MoodleProvider.getPublicKey();
-    crypto.setPublicKey(publicKey);
-    return await crypto.encrypt(JSON.stringify({
-      username: username,
-      password: password
-    }));
-  }
-
+  @action
   private manualLogin() {
-    this.showLoading = true;
-    this.encryptLogin(this.username, this.password).then((e) => {
-      this.login(e);
-    }).catch((e) => {
-      this.errorMessage = e.message;
-      this.showLoading = false;
-      this.showError = true;
-    });
+    encryptLogin(this.username, this.password)
+        .then((encryptedLogin) => {
+          this.login(encryptedLogin);
+        })
+        .catch((error) => {
+          this.errorMessage = error.message;
+          this.showError = true;
+          this.showLoading = false;
+        });
   }
 
-  private login(encrytedLogin: string) {
+  @action
+  private login(encryptedLogin: string) {
     this.showLoading = true;
-    const resetAction = StackActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({routeName: 'Plan'})],
-    });
-    MoodleProvider.login(encrytedLogin).then((m) => {
-      AsyncStorage.setItem('userpass', encrytedLogin);
-      AsyncStorage.setItem('moodleSession', m);
+
+    // fetch moodle session
+    MoodleProvider.login(encryptedLogin).then(async (moodleSession) => {
+      this.settingsManager.setUserAuth(encryptedLogin);
+      await this.settingsManager.save();
+
+      // go to plan screen with moodle session
+      const resetAction = StackActions.reset({
+        index: 0,
+        actions: [NavigationActions.navigate({
+          routeName: 'Plan', params: {
+            moodleSession: moodleSession,
+          }
+        })],
+      });
       this.props.navigation.dispatch(resetAction);
-    }).catch((e) => {
-      this.errorMessage = e.message;
+    }).catch((error) => {
+      this.errorMessage = error.message;
       this.showLoading = false;
       this.showError = true;
     });
@@ -109,20 +117,31 @@ export class Login extends Component<LoginProps> {
     return (
         <View style={styles.login}>
           <Loader visible={this.showLoading}/>
-          <Alert visible={this.showError} title={'Es ist ein Fehler aufgetreten'} message={this.errorMessage}
+          <Alert visible={this.showError}
+                 title={'Es ist ein Fehler aufgetreten'}
+                 message={this.errorMessage}
                  onOkPress={() => {
                    this.showError = false
                  }}/>
-          <ImageBackground style={styles.background} source={require('./../../../assets/background.png')}>
+          <ImageBackground style={styles.background}
+                           source={require('./../../../assets/background.png')}>
             <View style={styles.container}>
-              <Image source={require('../../../assets/icon.png')} style={styles.logo}/>
+              <Image source={require('../../../assets/icon.png')}
+                     style={styles.logo}/>
               <View style={styles.form}>
-                <FormInput autoCapitalize={'none'} autoCorrect={false} placeholder={'Benutzername'} placeholderTextColor={'lightgrey'}
+                <FormInput autoCapitalize={'none'}
+                           autoCorrect={false}
+                           placeholder={'Benutzername'}
+                           placeholderTextColor={'lightgrey'}
                            value={this.props.username}
                            onChangeText={this.handleUsernameUpdate.bind(this)}/>
-                <FormInput placeholder={'Passwort'} placeholderTextColor={'lightgrey'} secureTextEntry={true}
-                           value={this.props.password} onChangeText={this.handlePasswordUpdate.bind(this)}/>
-                <Button label={'Log In'} onPress={this.manualLogin.bind(this)}/>
+                <FormInput placeholder={'Passwort'}
+                           placeholderTextColor={'lightgrey'}
+                           secureTextEntry={true}
+                           value={this.props.password}
+                           onChangeText={this.handlePasswordUpdate.bind(this)}/>
+                <Button label={'Log In'}
+                        onPress={this.manualLogin.bind(this)}/>
               </View>
             </View>
           </ImageBackground>
