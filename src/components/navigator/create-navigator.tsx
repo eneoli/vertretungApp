@@ -3,7 +3,7 @@ import {Login} from "../Login";
 import {Settings} from "../Settings";
 import {Plan} from "../Plan";
 import React, {useState} from "react";
-import {Image, TouchableOpacity, View} from "react-native";
+import {Image, StatusBar, TouchableOpacity, View} from "react-native";
 import {Info} from "../Info/info";
 import navigationService from "../../providers/navigationService";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
@@ -78,6 +78,7 @@ export function createNavigator(theme: ThemeType) {
                   visible && (
                       <Info onClose={() => {
                         setVisible(false);
+                        StatusBar.setBackgroundColor(darkMode ? '#322f3d' : '#b41019', true);
                       }}/>
                   )
                 }

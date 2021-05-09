@@ -1,5 +1,5 @@
 import React, {Component, ReactNode} from "react";
-import {Image, ImageBackground, Modal, Text, StyleSheet, View, TouchableOpacity} from "react-native";
+import {Image, ImageBackground, Modal, Text, StyleSheet, View, TouchableOpacity, StatusBar} from "react-native";
 import DeviceInfo from 'react-native-device-info'
 
 interface InfoProps {
@@ -7,9 +7,15 @@ interface InfoProps {
 }
 
 export class Info extends Component<InfoProps> {
+
+  public componentDidMount() {
+    StatusBar.setBackgroundColor('#47698e', true);
+  }
+
   public render(): ReactNode {
     return (
-        <Modal visible={true} transparent={true} animationType={"slide"} animated={true} onRequestClose={this.props.onClose}>
+        <Modal visible={true} transparent={true} animationType={"slide"} animated={true}
+               onRequestClose={this.props.onClose}>
           <ImageBackground style={{flex: 1}} source={require('./../../../assets/background.png')}>
             <View style={styles.container}>
               <Text style={styles.header}>Vertretungsplan App Gymnasium Leoninum Handrup</Text>
