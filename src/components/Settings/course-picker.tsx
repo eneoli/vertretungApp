@@ -16,10 +16,10 @@ export class CoursePicker extends Component<CoursePickerProps, CoursePickerState
 
   static contextType = ThemeContext;
 
-  constructor(props: any) {
+  constructor(props: CoursePickerProps) {
     super(props);
     this.state = {
-      courses: ['']
+      courses: [...props.initialCourses, '']
     }
   }
 
@@ -56,9 +56,11 @@ export class CoursePicker extends Component<CoursePickerProps, CoursePickerState
       },
       input: {
         color: darkMode ? 'white' : 'black',
+
       },
       text: {
         fontSize: 18,
+        fontWeight: 'bold',
         color: darkMode ? 'white' : 'black',
       }
     });
@@ -81,11 +83,13 @@ export class CoursePicker extends Component<CoursePickerProps, CoursePickerState
   public render(): ReactNode {
     return (
         <View style={this.getStyles().view}>
+          <Text style={this.getStyles().text}>Kurse:</Text>
           {
             this.state.courses.map((e, i) => (
                 <View>
-                  <Text style={this.getStyles().text}>Kurs:</Text>
                   <TextInput style={this.getStyles().input}
+                             placeholder={'Kursbezeichnung'}
+                             autoCapitalize={'none'}
                              onChange={(event: NativeSyntheticEvent<TextInputChangeEventData>) => {
                                this.onInput(i, event.nativeEvent.text)
                              }
