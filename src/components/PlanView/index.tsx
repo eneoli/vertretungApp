@@ -42,10 +42,10 @@ export class PlanView extends Component<PlanViewProps> {
     if (classSettings && classSettings.grade) {
       if (classSettings.grade <= 10) { // 5 -10
         return lesson.class.includes(classSettings.grade + classSettings.className);
-      } else if (classSettings.grade >= 13) { // 11 - 13
+      } else if (classSettings.grade >= 11) { // 11 - 13
         const isGrade = lesson.class.includes('' + classSettings.grade);
         const checkCourse = (classSettings.courses && classSettings.courses.length);
-        const inCourses = (classSettings.courses && classSettings.courses.includes(lesson.subject));
+        const inCourses = (checkCourse && classSettings.courses.includes(lesson.subject));
 
         return (isGrade && (!checkCourse || inCourses));
       }
