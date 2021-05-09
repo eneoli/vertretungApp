@@ -22,6 +22,10 @@ import SplashScreen from "react-native-splash-screen";
 import {encryptLogin} from "../../providers/crypto";
 import {SettingsManager} from "../../providers/settings";
 
+export interface ParamsFromLogin {
+  moodleSession: string;
+}
+
 interface LoginProps {
   username: string;
   password: string;
@@ -66,6 +70,7 @@ export class Login extends Component<LoginProps> {
     navigationService.setTopLevelNavigator(this.props.navigation);
 
     // auto login
+    this.settingsManager = new SettingsManager();
     this.settingsManager.load().then((settings) => {
       const userAuth = settings.userAuth;
       if (userAuth) {
@@ -76,6 +81,7 @@ export class Login extends Component<LoginProps> {
 
   @action
   private manualLogin() {
+    this.showLoading = true;
     encryptLogin(this.username, this.password)
         .then((encryptedLogin) => {
           this.login(encryptedLogin);
