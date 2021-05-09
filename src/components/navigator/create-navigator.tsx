@@ -11,7 +11,7 @@ import {faCog} from "@fortawesome/free-solid-svg-icons/faCog";
 import {NavigationActions} from "react-navigation";
 import {ThemeType} from "../themeContext/theme-context";
 
-const icon = require('./assets/icon.png');
+const icon = require('../../../assets/icon.png');
 
 function createCustomNavigatorStateFunction(navigator, ignoredRoutes: string[]) {
   const defaultGetStateForAction = navigator.router.getStateForAction;
@@ -94,7 +94,7 @@ export function createNavigator(theme: ThemeType) {
       }
     },
   })
-  navigator.router.getStateForAction = createCustomNavigatorStateFunction(this.navigator, ['Login', 'Main']);
+  navigator.router.getStateForAction = createCustomNavigatorStateFunction(navigator, ['Login', 'Main']);
 
   return navigator;
 }
