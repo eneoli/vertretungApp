@@ -14,12 +14,14 @@ export interface ClassSettings {
 }
 
 export interface AppContext {
+  userAuth: string | null;
   theme: AppTheme | null;
   classSettings: ClassSettings;
   pushNotifications: boolean;
 }
 
 const defaultSettings: AppContext = {
+  userAuth: null,
   classSettings: {
     className: null,
     courses: null,
@@ -58,6 +60,10 @@ export class SettingsManager {
 
   public setTheme(theme: AppTheme): void {
     this.settings.theme = theme;
+  }
+
+  public setUserAuth(userAuth: string): void {
+    this.settings.userAuth = userAuth;
   }
 
   public setClassSettings(classSettings: ClassSettings): void {
