@@ -9,6 +9,7 @@ import {ThemeContext} from "../themeContext/theme-context";
 import {Appearance} from "react-native-appearance";
 import {CoursePicker} from "./course-picker";
 import {AppContext, AppTheme, SettingsManager} from "../../providers/settings";
+import {NotificationManager} from "../../notifications/NotificationManager";
 
 interface ISettingsProps {
   navigation: NavigationScreenProp<this>;
@@ -27,13 +28,17 @@ export class Settings extends Component<ISettingsProps> {
 
   private settingsManager: SettingsManager;
 
+  private notificationManager: NotificationManager;
+
   private classes = [5, 6, 7, 8, 9, 10, 11, 12, 13];
 
   private classLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
 
   constructor(props) {
     super(props);
+    this.notificationManager = new NotificationManager();
     this.settingsManager = new SettingsManager();
+
     this.settingsManager.load().then((settings) => {
       this.settings = settings;
       this.isInitialized = true;
@@ -109,6 +114,12 @@ export class Settings extends Component<ISettingsProps> {
 
   private onToggleNotifications() {
     this.settings.pushNotifications = !this.settings.pushNotifications;
+
+    if (this.settings.pushNotifications) {
+      this.notificationManager.start().catch((error) => console.error(error));
+    } else {
+      this.notificationManager.stop().catch((error) => console.error(error));
+    }
   }
 
   public render(): React.ReactNode {
@@ -145,7 +156,8 @@ export class Settings extends Component<ISettingsProps> {
                           itemStyle={this.getStyles().pickerItems}
                           style={this.getStyles().picker}
                           selectedValue={this.settings.classSettings.className}
-                          onValueChange={(value) => this.onClassChange(value.toString())}>
+                          onValueChange={(value) => this.onClassChange((value && value.toString()) || null)}>
+                    <Picker.Item label={'Nicht angeben'} value={null} color={this.getStyles().pickerItems.color}/>
                     {
                       this.classLetters.map((i) => {
                         return <Picker.Item key={i} label={i} value={i} color={this.getStyles().pickerItems.color}/>
