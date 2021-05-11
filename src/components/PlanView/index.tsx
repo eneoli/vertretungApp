@@ -7,17 +7,8 @@ import {observer} from "mobx-react";
 import {observable} from "mobx";
 import {ThemeContext} from "../themeContext/theme-context";
 import {ClassSettings} from "../../providers/settings";
-
-interface Lesson {
-  index: number;
-  hour: string;
-  class: string;
-  subject: string;
-  teacher: string;
-  replacement: string;
-  room: string;
-  comment: string;
-}
+import {Lesson} from "../../providers/moodle";
+import {LessonHelper} from "../../helpers/lessons";
 
 interface PlanViewProps {
   plan: any;
@@ -35,22 +26,6 @@ export class PlanView extends Component<PlanViewProps> {
 
   constructor(props: PlanViewProps) {
     super(props);
-  }
-
-  private isAffected(lesson: Lesson) {
-    const classSettings = this.props.classSettings;
-    if (classSettings && classSettings.grade) {
-      if (classSettings.grade <= 10) { // 5 -10
-        return lesson.class.includes(classSettings.grade + classSettings.className);
-      } else if (classSettings.grade >= 11) { // 11 - 13
-        const isGrade = lesson.class.includes('' + classSettings.grade);
-        const checkCourse = (classSettings.courses && classSettings.courses.length);
-        const inCourses = (checkCourse && classSettings.courses.includes(lesson.subject));
-
-        return (isGrade && (!checkCourse || inCourses));
-      }
-    }
-    return true;
   }
 
   public render(): ReactNode {
@@ -71,7 +46,7 @@ export class PlanView extends Component<PlanViewProps> {
                     data={this.props.plan.lessons}
                     renderItem={(lesson: ListRenderItemInfo<Lesson>) => (
                         <Item key={lesson.index}
-                              hide={!this.isAffected(lesson.item)}
+                              hide={!LessonHelper.isAffected(this.props.classSettings, lesson.item)}
                               entry={lesson}
                               day={(this.props.plan.date)}/>
                     )}/>
