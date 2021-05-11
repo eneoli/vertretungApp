@@ -1,14 +1,14 @@
 import React, {Context} from 'react';
 
-export type AppTheme = 'light' | 'dark'
+export type ThemeType = 'light' | 'dark'
 
 export interface ThemeContextAttributes {
-  theme: AppTheme;
-  setTheme: (theme: AppTheme) => void;
+  theme: ThemeType;
+  setTheme: (theme: ThemeType) => void;
 }
 
 export const ThemeContext: Context<ThemeContextAttributes> = React.createContext({
-  theme: 'light' as AppTheme, // default
+  theme: 'light' as ThemeType, // default
   setTheme: (theme) => {
   },
 });
