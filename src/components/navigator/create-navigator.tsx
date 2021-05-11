@@ -61,7 +61,6 @@ export function createNavigator(theme: ThemeType) {
           shadowOpacity: 0,
           shadowRadius: 0,
           elevation: 0,
-          alignItems: 'center',
           backgroundColor: darkMode ? '#322f3d' : '#b41019',
         },
         headerTitleContainerStyle: {
