@@ -2,6 +2,7 @@ import React, {Component, ReactNode} from "react";
 import {View, Text, TextInput, TextInputChangeEventData, NativeSyntheticEvent, StyleSheet} from "react-native";
 import {ThemeContext} from "../themeContext/theme-context";
 import _ from "lodash";
+import {v4} from 'uuid';
 
 interface CoursePickerProps {
   initialCourses: string[];
@@ -86,7 +87,7 @@ export class CoursePicker extends Component<CoursePickerProps, CoursePickerState
           <Text style={this.getStyles().text}>Kurse:</Text>
           {
             this.state.courses.map((e, i) => (
-                <View>
+                <View key={v4()}>
                   <TextInput style={this.getStyles().input}
                              placeholder={'Kursbezeichnung'}
                              autoCapitalize={'none'}

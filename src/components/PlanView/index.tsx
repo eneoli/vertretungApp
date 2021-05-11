@@ -9,6 +9,7 @@ import {ThemeContext} from "../themeContext/theme-context";
 import {ClassSettings} from "../../providers/settings";
 import {Lesson} from "../../providers/moodle";
 import {LessonHelper} from "../../helpers/lessons";
+import {v4} from 'uuid';
 
 interface PlanViewProps {
   plan: any;
@@ -47,8 +48,9 @@ export class PlanView extends Component<PlanViewProps> {
                       usedTeachers={this.props.plan.usedTeachers}/>
           <FlatList scrollEnabled={false}
                     data={this.props.plan.lessons}
+                    keyExtractor={() => v4()}
                     renderItem={(lesson: ListRenderItemInfo<Lesson>) => (
-                        <Item key={lesson.index}
+                        <Item key={v4()}
                               hide={!LessonHelper.isAffected(this.props.classSettings, lesson.item)}
                               entry={lesson}
                               day={(this.props.plan.date)}/>

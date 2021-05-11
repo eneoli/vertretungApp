@@ -10,6 +10,7 @@ import {Appearance} from "react-native-appearance";
 import {CoursePicker} from "./course-picker";
 import {AppContext, AppTheme, SettingsManager} from "../../providers/settings";
 import {NotificationManager} from "../../notifications/NotificationManager";
+import {v4} from 'uuid';
 
 interface ISettingsProps {
   navigation: NavigationScreenProp<this>;
@@ -143,7 +144,7 @@ export class Settings extends Component<ISettingsProps> {
             <Picker.Item label={'Nicht angeben'} value={null} color={this.getStyles().pickerItems.color}/>
             {
               this.classes.map((i) => {
-                return <Picker.Item key={i} label={'' + i} value={i} color={this.getStyles().pickerItems.color}/>
+                return <Picker.Item key={v4()} label={'' + i} value={i} color={this.getStyles().pickerItems.color}/>
               })
             }
           </Picker>
@@ -160,7 +161,7 @@ export class Settings extends Component<ISettingsProps> {
                     <Picker.Item label={'Nicht angeben'} value={null} color={this.getStyles().pickerItems.color}/>
                     {
                       this.classLetters.map((i) => {
-                        return <Picker.Item key={i} label={i} value={i} color={this.getStyles().pickerItems.color}/>
+                        return <Picker.Item key={v4()} label={i} value={i} color={this.getStyles().pickerItems.color}/>
                       })
                     }
                   </Picker>
