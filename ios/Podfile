@@ -49,4 +49,8 @@ target 'vertretungsplanApp' do
 
   pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
 
+  pod 'react-native-background-worker', :path => '../node_modules/react-native-background-worker'
+
+  pod 'react-native-notifications', :path => '../node_modules/react-native-notifications'
+
 end
