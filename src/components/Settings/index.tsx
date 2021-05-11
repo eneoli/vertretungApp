@@ -170,7 +170,7 @@ export class Settings extends Component<ISettingsProps> {
             this.settings.classSettings.grade >= 11 && (
                 <View>
                   <CoursePicker onChange={this.onCourseChange.bind(this)}
-                                initialCourses={[...this.settings.classSettings.courses]}/>
+                                initialCourses={this.settings.classSettings.courses ? [...this.settings.classSettings.courses] : []}/>
                 </View>
             )
           }
