@@ -1,3 +1,14 @@
+export interface Lesson {
+  index: number;
+  hour: string;
+  class: string;
+  subject: string;
+  teacher: string;
+  replacement: string;
+  room: string;
+  comment: string;
+}
+
 export class MoodleProvider {
 
   public static middlewareUrl: string = "https://vertretung.enes.app";
