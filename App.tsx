@@ -1,12 +1,13 @@
 import React, {Component, ReactNode} from 'react';
 import {createAppContainer} from 'react-navigation';
-import {StatusBar,} from 'react-native';
+import {StatusBar} from 'react-native';
 import {ThemeContext, ThemeType} from './src/components/themeContext/theme-context';
 import {observer} from "mobx-react";
 import {action, observable} from "mobx";
 import {Appearance} from "react-native-appearance";
 import {createNavigator} from "./src/components/navigator/create-navigator";
 import {AppContext, AppTheme, SettingsManager} from "./src/providers/settings";
+import {NotificationManager} from "./src/notifications/NotificationManager";
 
 @observer
 export default class App extends Component {
@@ -22,14 +23,21 @@ export default class App extends Component {
 
   private settingsManager: SettingsManager;
 
+  private notificationManager: NotificationManager;
+
   constructor(props: object) {
     super(props);
     this.settingsManager = new SettingsManager();
-    this.settingsManager.load().then((settings: AppContext) => {
+    this.notificationManager = new NotificationManager();
+    this.settingsManager.load().then(async (settings: AppContext) => {
       const theme = settings.theme;
       const newThemeType = App.getThemeType(theme);
       this.updateThemeType(newThemeType);
       this.isInitialized = true;
+
+      if (settings.pushNotifications && !(await this.notificationManager.isRunning())) {
+        await this.notificationManager.start();
+      }
     })
   }
 
