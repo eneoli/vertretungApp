@@ -1,3 +1,11 @@
+export interface SubstitutionPlan {
+  date: string;
+  state: string;
+  missingTeacher: string;
+  usedTeacher: string;
+  lessons: Lesson[];
+}
+
 export interface Lesson {
   index: number;
   hour: string;
@@ -12,7 +20,6 @@ export interface Lesson {
 export class MoodleProvider {
 
   public static middlewareUrl: string = "https://vertretung.enes.app";
-  public middlewareUrl: string = MoodleProvider.middlewareUrl;
 
   /**
    * @param username
@@ -28,7 +35,7 @@ export class MoodleProvider {
     }
   }
 
-  public static async getPublicKey(): Promise<any> {
+  public static async getPublicKey(): Promise<string> {
     return (((await fetch(this.middlewareUrl + "/publickey")).text()));
   }
 
@@ -36,7 +43,7 @@ export class MoodleProvider {
     return await (await fetch(MoodleProvider.middlewareUrl + '/validateSession?moodleSession=' + moodleSession)).json();
   }
 
-  public static async getPlan(day: 'today' | 'tomorrow', moodleSession: string): Promise<any> {
+  public static async getPlan(day: 'today' | 'tomorrow', moodleSession: string): Promise<SubstitutionPlan> {
     return await (await fetch(MoodleProvider.middlewareUrl + "/fetch/" + day + "?moodleSession=" + moodleSession)).json();
   }
 }
