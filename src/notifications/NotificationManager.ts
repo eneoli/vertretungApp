@@ -78,7 +78,6 @@ export class NotificationManager {
 
     if (this.workerId) {
       const info = await this.getWorkerInfo();
-      console.log(info);
       return !(info.state === 'cancelled' || info.state === 'unknown');
     }
     return false;
