@@ -65,18 +65,23 @@ export class Plan extends Component<PlanProps> {
     }).catch((error) => console.error(error));
   }
 
-  public componentDidMount(): void {
-    StatusBar.setBackgroundColor(this.context.theme === 'light' ? '#b41019' : '#322f3d');
-  }
-
-  public async loadPlans() {
+  private async loadPlans() {
     this.today = await MoodleProvider.getPlan('today', this.moodleSession);
     this.tomorrow = await MoodleProvider.getPlan('tomorrow', this.moodleSession);
   }
 
-  public async readStudentClass() {
+  private async readStudentClass() {
     const settings = await this.settingsManager.load(); // always reload
     this.classSettings = settings.classSettings;
+  }
+
+  private async onRefresh(done: () => void) {
+    await this.loadPlans();
+    done();
+  }
+
+  public componentDidMount(): void {
+    StatusBar.setBackgroundColor(this.context.theme === 'light' ? '#b41019' : '#322f3d');
   }
 
   public render() {
@@ -103,10 +108,10 @@ export class Plan extends Component<PlanProps> {
                   renderScene={SceneMap({
                     first: () => <PlanView plan={this.today}
                                            classSettings={this.classSettings}
-                                           onRefresh={this.loadPlans.bind(this)}/>,
+                                           onRefresh={this.onRefresh.bind(this)}/>,
                     second: () => <PlanView plan={this.tomorrow}
                                             classSettings={this.classSettings}
-                                            onRefresh={this.loadPlans.bind(this)}/>
+                                            onRefresh={this.onRefresh.bind(this)}/>
                   })}
               />
             </View>

@@ -12,7 +12,7 @@ import {LessonHelper} from "../../helpers/lessons";
 
 interface PlanViewProps {
   plan: any;
-  onRefresh: () => void;
+  onRefresh: (done: () => void) => void;
   classSettings: ClassSettings;
 }
 
@@ -28,6 +28,10 @@ export class PlanView extends Component<PlanViewProps> {
     super(props);
   }
 
+  private refreshingDone() {
+    this.refreshing = false;
+  }
+
   public render(): ReactNode {
     return (
         <ScrollView
@@ -36,8 +40,7 @@ export class PlanView extends Component<PlanViewProps> {
             }}
             refreshControl={<RefreshControl refreshing={this.refreshing} onRefresh={() => {
               this.refreshing = true;
-              this.props.onRefresh();
-              this.refreshing = false;
+              this.props.onRefresh(this.refreshingDone.bind(this));
             }}/>}>
           <InfoHeader day={this.props.plan.date}
                       missingTeachers={this.props.plan.missingTeachers}
