@@ -1,5 +1,15 @@
 import React, {Component, ReactNode} from "react";
-import {Image, ImageBackground, Modal, Text, StyleSheet, View, TouchableOpacity, StatusBar} from "react-native";
+import {
+  Image,
+  ImageBackground,
+  Modal,
+  Text,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  StatusBar,
+  Linking
+} from "react-native";
 import DeviceInfo from 'react-native-device-info'
 
 interface InfoProps {
@@ -12,6 +22,10 @@ export class Info extends Component<InfoProps> {
     StatusBar.setBackgroundColor('#47698e', true);
   }
 
+  private async openHomepage() {
+    await Linking.openURL('https://leoninum.org');
+  }
+
   public render(): ReactNode {
     return (
         <Modal visible={true} transparent={true} animationType={"slide"} animated={true}
@@ -19,7 +33,7 @@ export class Info extends Component<InfoProps> {
           <ImageBackground style={{flex: 1}} source={require('./../../../assets/background.png')}>
             <View style={styles.container}>
               <Text style={styles.header}>Vertretungsplan App Gymnasium Leoninum Handrup</Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={this.openHomepage.bind(this)}>
                 <Image source={require('../../../assets/icon.png')} style={styles.logo}/>
               </TouchableOpacity>
               <Text style={styles.text}>App-Version: {DeviceInfo.getVersion()}</Text>
