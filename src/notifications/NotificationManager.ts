@@ -4,10 +4,15 @@ import {SettingsManager} from "../providers/settings";
 import {NotificationWork} from "./NotificationWork";
 
 export class NotificationManager {
+
+  private isInitialized: boolean = false;
+
   private workerId: string | null = null;
+
   private settingsManager: SettingsManager = new SettingsManager();
 
   private readonly WORKER_ID_KEY = 'VP_LEO_WORKER_ID';
+
   private readonly WORKER_SCHEDULE = 15;
 
   private async save() {
@@ -15,13 +20,19 @@ export class NotificationManager {
   }
 
   private async getWorkerInfo() {
+    await this.init();
+
     if (this.workerId) {
       return await WorkManager.info(this.workerId);
     }
     return null;
   }
 
-  public async init() {
+  private async init() {
+    if (this.isInitialized) {
+      return;
+    }
+
     const workerId = await AsyncStorage.getItem(this.WORKER_ID_KEY);
     if (workerId) {
       this.workerId = workerId;
@@ -29,6 +40,8 @@ export class NotificationManager {
   }
 
   public async stop() {
+    await this.init();
+
     if (this.workerId) {
       // success type throws error... library bug
       try {
@@ -41,6 +54,7 @@ export class NotificationManager {
   }
 
   public async start() {
+    await this.init();
     await this.stop();
 
     const work = new NotificationWork(this.settingsManager);
@@ -60,8 +74,11 @@ export class NotificationManager {
   }
 
   public async isRunning() {
+    await this.init();
+
     if (this.workerId) {
       const info = await this.getWorkerInfo();
+      console.log(info);
       return !(info.state === 'cancelled' || info.state === 'unknown');
     }
     return false;
