@@ -91,7 +91,7 @@ export class NotificationWork {
       title: 'Du hast Vertretung',
       bigLargeIcon: 'icon',
       largeIcon: 'icon',
-      smallIcon: 'icon',
+      smallIcon: 'transparent_icon',
       message: this.generateNotificationText(task),
     });
 
