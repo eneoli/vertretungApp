@@ -1,5 +1,5 @@
 import {Component, ReactNode} from "react";
-import {FlatList, ListRenderItemInfo, RefreshControl, Text, View} from "react-native";
+import {FlatList, ListRenderItemInfo, RefreshControl, Text, View, StyleSheet, ScrollView} from "react-native";
 import {Item} from "./Item";
 import * as React from 'react';
 import {InfoHeader} from "../InfoHeader";
@@ -7,12 +7,14 @@ import {observer} from "mobx-react";
 import {observable} from "mobx";
 import {ThemeContext} from "../themeContext/theme-context";
 import {ClassSettings} from "../../providers/settings";
-import {Lesson} from "../../providers/moodle";
+import {Lesson, SubstitutionPlan} from "../../providers/moodle";
 import {LessonHelper} from "../../helpers/lessons";
 import {v4} from 'uuid';
+import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
+import {faTimesCircle} from "@fortawesome/free-solid-svg-icons/faTimesCircle";
 
 interface PlanViewProps {
-  plan: any;
+  plan: SubstitutionPlan;
   onRefresh: (done: () => void) => void;
   classSettings: ClassSettings;
 }
@@ -33,7 +35,43 @@ export class PlanView extends Component<PlanViewProps> {
     this.refreshing = false;
   }
 
+  private getStyles() {
+    const darkMode = this.context.theme === 'dark';
+
+    return StyleSheet.create({
+      noPlanContainer: {
+        backgroundColor: darkMode ? '#282c3d' : 'white',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: 10,
+      },
+      noPlanCross: {
+        color: darkMode ? 'white' : 'lightgray',
+        margin: 20,
+      },
+      noPlanText: {
+        color: darkMode ? 'white' : 'black',
+      }
+    })
+  }
+
   public render(): ReactNode {
+
+    if (!this.props.plan || !this.props.plan.lessons || !this.props.plan.lessons.length) {
+      return (
+          <ScrollView scrollEnabled={true}
+                      refreshControl={<RefreshControl refreshing={this.refreshing} onRefresh={() => {
+                        this.refreshing = true;
+                        this.props.onRefresh(this.refreshingDone.bind(this));
+                      }}/>}
+                      contentContainerStyle={this.getStyles().noPlanContainer}>
+            <FontAwesomeIcon icon={faTimesCircle} size={200} style={this.getStyles().noPlanCross}/>
+            <Text style={this.getStyles().noPlanText}>Keine Vertretungsstunden</Text>
+          </ScrollView>
+      )
+    }
+
     return (
         <View
             style={{
