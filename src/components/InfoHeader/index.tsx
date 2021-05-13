@@ -8,7 +8,7 @@ import {ThemeContext} from "../themeContext/theme-context";
 interface IInfoHeaderProps {
   missingTeachers: any;
   usedTeachers: any;
-  day: Date;
+  day: string;
 }
 
 export class InfoHeader extends Component<IInfoHeaderProps> {
