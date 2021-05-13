@@ -4,7 +4,6 @@ import {View, StyleSheet, Text} from "react-native";
 import {action, observable} from "mobx";
 import {observer} from "mobx-react";
 import Modal from 'react-native-modal';
-import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {
   faBook,
   faCalendarDay,
@@ -23,7 +22,7 @@ moment.locale('de');
 
 interface ItemProps {
   entry: any;
-  day: Date;
+  day: string;
   hide: boolean;
 }
 
