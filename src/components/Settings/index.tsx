@@ -47,26 +47,6 @@ export class Settings extends Component<ISettingsProps> {
     });
   }
 
-  componentWillUnmount(): void {
-    this.settingsManager.setSettings(this.settings);
-    this.settingsManager.save();
-
-    const colorScheme = Appearance.getColorScheme();
-    const systemLightMode = colorScheme === 'light' || colorScheme === 'no-preference';
-
-    if (this.settings.theme === 'system') {
-      this.context.setTheme(systemLightMode ? 'light' : 'dark');
-    } else {
-      this.context.setTheme(this.settings.theme);
-    }
-
-    if (this.settings.pushNotifications) {
-      this.notificationManager.start().catch((error) => console.error(error));
-    } else {
-      this.notificationManager.stop().catch((error) => console.error(error));
-    }
-  }
-
   private getStyles() {
     const darkMode = this.context.theme === 'dark';
     return StyleSheet.create({
@@ -128,8 +108,29 @@ export class Settings extends Component<ISettingsProps> {
     this.settings.theme = theme as AppTheme;
   }
 
-  private onToggleNotifications() {
+  private async onToggleNotifications() {
     this.settings.pushNotifications = !this.settings.pushNotifications;
+  }
+
+  public async componentWillUnmount(): Promise<void> {
+    this.settingsManager.setSettings(this.settings);
+    await this.settingsManager.save();
+
+    const colorScheme = Appearance.getColorScheme();
+    const systemLightMode = colorScheme === 'light' || colorScheme === 'no-preference';
+
+    if (this.settings.theme === 'system') {
+      this.context.setTheme(systemLightMode ? 'light' : 'dark');
+    } else {
+      this.context.setTheme(this.settings.theme);
+    }
+
+    const workerIsRunning = await this.notificationManager.isRunning();
+    if (this.settings.pushNotifications && !workerIsRunning) {
+      await this.notificationManager.start();
+    } else if (workerIsRunning) {
+      await this.notificationManager.stop();
+    }
   }
 
   public render(): React.ReactNode {
