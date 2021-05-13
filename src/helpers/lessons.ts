@@ -13,7 +13,10 @@ export class LessonHelper {
       } else if (classSettings.grade >= 11) { // 11 - 13
         const isGrade = lesson.class.includes('' + classSettings.grade);
         const checkCourse = (classSettings.courses && classSettings.courses.length);
-        const inCourses = (checkCourse && classSettings.courses.includes(lesson.subject));
+
+        const lowerCourses = checkCourse ? classSettings.courses.map((course) => course.toLowerCase()) : [];
+
+        const inCourses = lowerCourses.includes(lesson.subject.toLowerCase());
 
         return (isGrade && (!checkCourse || inCourses));
       }
