@@ -1,4 +1,4 @@
-import {AsyncStorage} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import WorkManager from 'react-native-background-worker'
 import {SettingsManager} from "../providers/settings";
 import {NotificationWork} from "./NotificationWork";
