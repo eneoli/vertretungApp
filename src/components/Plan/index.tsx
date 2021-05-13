@@ -30,7 +30,7 @@ export class Plan extends Component<PlanProps, PlanState> {
 
   static contextType = ThemeContext;
 
-  private settingsManager: SettingsManager;
+  private settingsManager: SettingsManager = new SettingsManager();
 
   constructor(props) {
     super(props);
@@ -42,40 +42,6 @@ export class Plan extends Component<PlanProps, PlanState> {
       today: null,
       tomorrow: null,
     };
-
-    this.settingsManager = new SettingsManager();
-    this.setState({
-      ...this.state,
-      moodleSession: this.props.navigation.getParam('moodleSession'),
-    });
-
-    // when coming back from settings
-    // TODO conditional reload
-    this.props.navigation.addListener('didFocus', async () => {
-      this.setState({
-        ...this.state,
-        loading: true,
-      });
-
-      await this.loadPlans();
-      await this.readStudentClass();
-
-      this.setState({
-        ...this.state,
-        loading: false,
-      });
-    });
-
-    // initially get data from moodle and get class settings
-    Promise.all([
-      this.loadPlans(),
-      this.readStudentClass(),
-    ]).then(() => {
-      this.setState({
-        ...this.state,
-        loading: false,
-      });
-    }).catch((error) => console.error(error));
   }
 
   @action
@@ -114,8 +80,39 @@ export class Plan extends Component<PlanProps, PlanState> {
     });
   }
 
-  public componentDidMount(): void {
+  public async componentDidMount(): Promise<void> {
     StatusBar.setBackgroundColor(this.context.theme === 'light' ? '#b41019' : '#322f3d');
+
+    this.setState({
+      ...this.state,
+      moodleSession: this.props.navigation.getParam('moodleSession'),
+    });
+
+    // when coming back from settings
+    // TODO conditional reload
+    this.props.navigation.addListener('didFocus', async () => {
+      this.setState({
+        ...this.state,
+        loading: true,
+      });
+
+      await this.loadPlans();
+      await this.readStudentClass();
+
+      this.setState({
+        ...this.state,
+        loading: false,
+      });
+    });
+
+    // initially get data from moodle and get class settings
+    await this.loadPlans();
+    await this.readStudentClass();
+
+    this.setState({
+      ...this.state,
+      loading: false,
+    });
   }
 
   public render() {
