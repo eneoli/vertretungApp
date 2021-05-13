@@ -33,7 +33,8 @@ export class Loader extends Component<LoaderProps> {
         {
           toValue: 1,
           duration: 150,
-          easing: Easing.linear
+          easing: Easing.linear,
+          useNativeDriver: true,
         }
     ).start()
   }
