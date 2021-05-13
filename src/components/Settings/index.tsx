@@ -59,6 +59,12 @@ export class Settings extends Component<ISettingsProps> {
     } else {
       this.context.setTheme(this.settings.theme);
     }
+
+    if (this.settings.pushNotifications) {
+      this.notificationManager.start().catch((error) => console.error(error));
+    } else {
+      this.notificationManager.stop().catch((error) => console.error(error));
+    }
   }
 
   private getStyles() {
@@ -124,12 +130,6 @@ export class Settings extends Component<ISettingsProps> {
 
   private onToggleNotifications() {
     this.settings.pushNotifications = !this.settings.pushNotifications;
-
-    if (this.settings.pushNotifications) {
-      this.notificationManager.start().catch((error) => console.error(error));
-    } else {
-      this.notificationManager.stop().catch((error) => console.error(error));
-    }
   }
 
   public render(): React.ReactNode {
