@@ -35,7 +35,8 @@ export default class App extends Component {
       this.updateThemeType(newThemeType);
       this.isInitialized = true;
 
-      if (settings.pushNotifications && !(await this.notificationManager.isRunning())) {
+      if (settings.pushNotifications) {
+        // restart notifications
         await this.notificationManager.start();
       }
     })
@@ -57,6 +58,9 @@ export default class App extends Component {
   private updateThemeType(newThemeType: ThemeType) {
     this.themeType = newThemeType;
     this.navigator = createNavigator(this.themeType);
+  }
+
+  public async componentWillUnmount() {
   }
 
   public componentDidMount() {
