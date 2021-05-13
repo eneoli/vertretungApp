@@ -1,8 +1,8 @@
 export interface SubstitutionPlan {
   date: string;
   state: string;
-  missingTeacher: string;
-  usedTeacher: string;
+  missingTeachers: string;
+  usedTeachers: string;
   lessons: Lesson[];
 }
 
@@ -19,7 +19,7 @@ export interface Lesson {
 
 export class MoodleProvider {
 
-  public static middlewareUrl: string = "https://vertretung.enes.app";
+  public static middlewareUrl: string = "https://vertretung.leoninum.org";
 
   /**
    * @param username
@@ -40,7 +40,7 @@ export class MoodleProvider {
   }
 
   public static async moodleSessionValid(moodleSession: string) {
-    return await (await fetch(MoodleProvider.middlewareUrl + '/validateSession?moodleSession=' + moodleSession)).json();
+    return await (await fetch(MoodleProvider.middlewareUrl + '/?moodleSession=' + moodleSession)).json();
   }
 
   public static async getPlan(day: 'today' | 'tomorrow', moodleSession: string): Promise<SubstitutionPlan> {
