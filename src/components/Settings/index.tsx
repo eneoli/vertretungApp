@@ -1,5 +1,5 @@
 import {Component} from "react";
-import {View, Text, StyleSheet} from "react-native";
+import {View, Text, StyleSheet, Alert} from "react-native";
 import CheckBox from "@react-native-community/checkbox";
 import {Picker} from "@react-native-picker/picker";
 import * as React from 'react';
@@ -110,6 +110,15 @@ export class Settings extends Component<ISettingsProps> {
 
   private async onToggleNotifications() {
     this.settings.pushNotifications = !this.settings.pushNotifications;
+
+    if (this.settings.pushNotifications) {
+      this.informUserAboutNoitificationLimitations();
+    }
+
+  }
+
+  private informUserAboutNoitificationLimitations() {
+    Alert.alert('Info', 'Dieses Feature funktioniert nur, solange die App nur minimiert, aber nicht komplett geschlossen ist.');
   }
 
   public async componentWillUnmount(): Promise<void> {
