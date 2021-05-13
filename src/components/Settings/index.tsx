@@ -1,10 +1,11 @@
 import {Component} from "react";
-import {View, Text, StyleSheet, CheckBox} from "react-native";
+import {View, Text, StyleSheet} from "react-native";
+import CheckBox from "@react-native-community/checkbox";
+import {Picker} from "@react-native-picker/picker";
 import * as React from 'react';
 import {observable} from "mobx";
 import {observer} from "mobx-react";
 import {NavigationScreenProp} from "react-navigation";
-import {Picker} from '@react-native-community/picker';
 import {ThemeContext} from "../themeContext/theme-context";
 import {Appearance} from "react-native-appearance";
 import {CoursePicker} from "./course-picker";
@@ -66,7 +67,7 @@ export class Settings extends Component<ISettingsProps> {
       view: {
         backgroundColor: darkMode ? '#282c3d' : 'white',
         height: '100%',
-        padding: 5,
+        padding: 10,
       },
       headerText: {
         fontSize: 20,
@@ -88,8 +89,16 @@ export class Settings extends Component<ISettingsProps> {
       },
       checkboxContainer: {
         flexDirection: 'row',
+        alignContent: 'center',
+        width: '100%',
         margin: 10,
-      }
+      },
+      checkboxText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: darkMode ? 'white' : 'black',
+        marginTop: 5,
+      },
     });
   }
 
@@ -177,7 +186,7 @@ export class Settings extends Component<ISettingsProps> {
           }
           <View style={this.getStyles().checkboxContainer} onTouchEnd={this.onToggleNotifications.bind(this)}>
             <CheckBox value={this.settings.pushNotifications}/>
-            <Text style={this.getStyles().fieldText}>Push-Benachrichtigungen</Text>
+            <Text style={this.getStyles().checkboxText}>Push-Benachrichtigungen</Text>
           </View>
           <View>
             <Text style={this.getStyles().fieldText}>Aussehen</Text>
