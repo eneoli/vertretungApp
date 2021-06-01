@@ -38,7 +38,7 @@ export class Plan extends Component<PlanProps, PlanState> {
       index: 0,
       classSettings: null,
       loading: true,
-      moodleSession: null,
+      moodleSession: props.navigation.getParam('moodleSession'),
       today: null,
       tomorrow: null,
     };
@@ -69,6 +69,21 @@ export class Plan extends Component<PlanProps, PlanState> {
     done();
   }
 
+  private async reloadData(): Promise<void> {
+    this.setState({
+      ...this.state,
+      loading: true,
+    });
+
+    await this.loadPlans();
+    await this.readStudentClass();
+
+    this.setState({
+      ...this.state,
+      loading: false,
+    });
+  }
+
   private getStyles() {
     const darkMode = this.context.theme === 'dark';
 
@@ -83,36 +98,14 @@ export class Plan extends Component<PlanProps, PlanState> {
   public async componentDidMount(): Promise<void> {
     StatusBar.setBackgroundColor(this.context.theme === 'light' ? '#b41019' : '#322f3d');
 
-    this.setState({
-      ...this.state,
-      moodleSession: this.props.navigation.getParam('moodleSession'),
-    });
-
     // when coming back from settings
     // TODO conditional reload
     this.props.navigation.addListener('didFocus', async () => {
-      this.setState({
-        ...this.state,
-        loading: true,
-      });
-
-      await this.loadPlans();
-      await this.readStudentClass();
-
-      this.setState({
-        ...this.state,
-        loading: false,
-      });
+      await this.reloadData();
     });
 
     // initially get data from moodle and get class settings
-    await this.loadPlans();
-    await this.readStudentClass();
-
-    this.setState({
-      ...this.state,
-      loading: false,
-    });
+    await this.reloadData();
   }
 
   public render() {
