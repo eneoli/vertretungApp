@@ -23,7 +23,7 @@
     "@types/uuid": "^8.3.0",
     "babel-preset-react-native": "^4.0.1",
     "expo": "^35.0.0",
-    "hermes-engine": "^0.8.0",
+    "hermes-engine": "^0.10.0",
     "jsencrypt": "3.0.0-rc.1",
     "mobx": "^5.14.0",
     "mobx-react": "^6.1.4",
